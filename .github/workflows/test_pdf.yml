@@ -17,6 +17,7 @@ jobs:
             --toc-depth=2
             --number-sections
             --syntax-highlighting idiomatic
+            --top-level-division="chapter"
       - uses: actions/upload-artifact@v4
         with:
           name: output

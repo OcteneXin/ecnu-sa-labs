@@ -664,9 +664,16 @@ $endif$
   $if(mainfont)$
   $else$
   \usepackage[fallback]{xeCJK}
-  \setCJKmainfont[Path={font/},AutoFakeBold, AutoFakeSlant]{WenYuanSerifSC-Regular.ttf}
-  \setCJKsansfont[Path={font/}]{WenYuanSansSC-Regular.ttf}
-  \setCJKmonofont[Path={font/},AutoFakeBold, AutoFakeSlant]{WenYuanRoundedSC-Medium.ttf} 
+  \setCJKmainfont { FandolSong-Regular }
+        [
+          Extension  = .otf,
+          BoldFont   = FandolSong-Bold,
+          ItalicFont = FandolKai-Regular
+        ]
+  \setCJKsansfont { FandolHei-Regular  }
+        [ Extension = .otf, BoldFont = FandolHei-Bold ]
+  \setCJKmonofont { FandolFang-Regular }
+        [ Extension = .otf ]
   \usepackage[default]{sourcesanspro}
   \usepackage{sourcecodepro}
 

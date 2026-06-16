@@ -5,6 +5,7 @@ Building an understanding of the LLVM framework: IR, API, and the toolchain.
 ### Objective
 
 The objective of this lab is three-fold:
+
 + Understanding a representation of C programs called [LLVM IR][llvm-lang] that we
 will use in our labs.
 It is the intermediate representation used by [LLVM][llvm], a popular compiler

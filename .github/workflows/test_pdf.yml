@@ -10,7 +10,7 @@ jobs:
       - uses: docker://pandoc/extra:3.8
         with:
           args: >-  # break string of arguments into multiple lines
-            lab_manual_cn/lab1.md --output=output/result.pdf --pdf-engine=lualatex
+            lab_manual_cn/lab1.md --output=output/result.pdf --pdf-engine=xelatex
             --standalone
             --template /.pandoc/templates/eisvogel.latex
             --listings

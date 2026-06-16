@@ -1,10 +1,11 @@
 ---
 title: "软件分析与测试实验手册"
-author: [Author]
+author: [ecnu-sa-labs]
 date: "2026-06-01"
 lang: "zh"
 toc: true
 toc-own-page: true
+titlepage: true
 ...
 
 ## 理解静态分析与动态分析
@@ -142,6 +143,8 @@ c_programs/test9.c:10:17: warning: Division by zero [core.DivideZero]
 [^1]: 文件名编码了多种信息，例如崩溃输入的 ID、崩溃信号、产生此崩溃输入的非崩溃种子输入（在我们的例子中始终是文件 lab1/afl_input/seed.txt），以及将非崩溃种子输入转换为该崩溃输入所执行的操作。
 
 [learn-make-in-y-minutes]: https://learnxinyminutes.com/docs/make
+
+<div STYLE="page-break-after: always;"></div>
 
 ## LLVM 框架
 

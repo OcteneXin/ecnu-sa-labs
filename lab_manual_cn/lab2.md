@@ -1,5 +1,3 @@
-# LAB 2
-
 ## LLVM 框架
 
 理解 LLVM 框架：IR、API 和工具链。

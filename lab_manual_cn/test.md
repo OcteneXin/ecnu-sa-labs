@@ -1,8 +1,3 @@
----
-CJKmainfont: STSong
-CJKsansfont: SimHei
-CJKmonofont: SimHei
----
 ## 理解静态分析与动态分析
 
 理解软件分析的基本概念以及用于评估分析有效性的度量指标。

@@ -1,15 +1,11 @@
 ---
-title: "Example PDF"
+title: "软件分析与测试实验手册"
 author: [Author]
-date: "2022-03-04"
-subject: "Markdown"
-keywords: [Markdown, Example]
+date: "2026-06-01"
 lang: "zh"
 toc: true
 toc-own-page: true
 ...
-
-# 软件分析与测试实验手册
 
 ## Lab 1: 理解静态分析与动态分析
 

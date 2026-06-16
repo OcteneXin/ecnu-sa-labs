@@ -1,0 +1,16 @@
+name: Test PDF
+
+on: push
+
+jobs:
+  convert_via_pandoc:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker://pandoc/latex:3.5
+        with:
+          args: --output=output/result.pdf lab_manual_cn/lab1.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: output
+          path: output

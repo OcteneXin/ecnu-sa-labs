@@ -664,8 +664,8 @@ $endif$
   $if(mainfont)$
   $else$
   \usepackage[fallback]{xeCJK}
-  \setCJKmainfont{Noto Serif SC}
-  \setCJKfallbackfamilyfont{rm}{Noto Serif SC}
+  \setCJKmainfont{STSongti-SC}
+  \setCJKfallbackfamilyfont{rm}{STSongti-SC}
   \usepackage[default]{sourcesanspro}
   \usepackage{sourcecodepro}
 

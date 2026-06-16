@@ -10,11 +10,8 @@ jobs:
       - uses: docker://pandoc/extra:3-ubuntu
         with:
           args: >-  # break string of arguments into multiple lines
-            lab_manual_cn/lab1.md --output=output/result.pdf --pdf-engine=xelatex
+            lab_manual_cn/document.md --output=output/result.pdf --pdf-engine=xelatex
             --template .github/template/eisvogel.latex
-            --top-level-division="chapter"
-            --number-sections
-            --syntax-highlighting idiomatic
       - uses: actions/upload-artifact@v4
         with:
           name: output

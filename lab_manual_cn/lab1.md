@@ -6,6 +6,8 @@ lang: "zh"
 toc: true
 toc-own-page: true
 titlepage: true
+book: true
+classoption: [oneside]
 ...
 
 ## 理解静态分析与动态分析

@@ -12,7 +12,7 @@ jobs:
           args: >-  # break string of arguments into multiple lines
             lab_manual_cn/lab1.md --output=output/result.pdf --pdf-engine=xelatex
             --template .github/template/eisvogel.latex
-            --from markdown+raw_html
+            --from markdown
             --shift-heading-level-by=-1
             --toc-depth=2
             --number-sections

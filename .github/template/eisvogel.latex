@@ -664,8 +664,9 @@ $endif$
   $if(mainfont)$
   $else$
   \usepackage[fallback]{xeCJK}
-  \setCJKmainfont{STSongti-SC}
-  \setCJKfallbackfamilyfont{rm}{STSongti-SC}
+  \setCJKmainfont[Path={font/},AutoFakeBold, AutoFakeSlant]{WenYuanSerifSC-Regular.ttf}
+  \setCJKsansfont[Path={font/}]{WenYuanSansSC-Regular.ttf}
+  \setCJKmonofont[Path={font/},AutoFakeBold, AutoFakeSlant]{WenYuanRoundedSC-Medium.ttf} 
   \usepackage[default]{sourcesanspro}
   \usepackage{sourcecodepro}
 

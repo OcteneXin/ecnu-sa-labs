@@ -15,8 +15,7 @@ jobs:
             --shift-heading-level-by=-1
             --toc-depth=2
             --number-sections
-            --reference-links
-            --reference-location=section
+            --citeproc
       - uses: actions/upload-artifact@v4
         with:
           name: output

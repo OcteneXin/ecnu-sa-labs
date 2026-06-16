@@ -11,6 +11,7 @@ jobs:
         with:
           args: >-  # break string of arguments into multiple lines
             lab_manual_cn/test.md --output=output/result.pdf --pdf-engine=xelatex
+            --template /.pandoc/templates/eisvogel.latex
       - uses: actions/upload-artifact@v4
         with:
           name: output

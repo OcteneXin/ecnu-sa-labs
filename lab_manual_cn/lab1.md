@@ -9,9 +9,9 @@ toc: true
 toc-own-page: true
 ...
 
-# LAB 1
+# 软件分析与测试实验手册
 
-## 理解静态分析与动态分析
+## Lab 1: 理解静态分析与动态分析
 
 理解软件分析的基本概念以及用于评估分析有效性的度量指标。
 
@@ -149,9 +149,7 @@ c_programs/test9.c:10:17: warning: Division by zero [core.DivideZero]
 [makefile-tutorial]: https://www.gnu.org/software/make/manual/html_node/Simple-Makefile.html
 [learn-make-in-y-minutes]: https://learnxinyminutes.com/docs/make
 
-# LAB 2
-
-## LLVM 框架
+## Lab 2: LLVM 框架
 
 理解 LLVM 框架：IR、API 和工具链。
 

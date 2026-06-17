@@ -6,6 +6,8 @@ lang: "zh"
 toc: true
 toc-own-page: true
 titlepage: true
+book: true
+classoption: [oneside]
 ...
 
 # 设置课程实验环境

@@ -1,30 +1,30 @@
-## Setting up course lab environment
+# Setting up course lab environment
 
 Our labs use VScode and Docker containers to build a flexible, consistent and ready-to-use development environment. You can view the picture below to understand the architecture of our lab environment (a.k.a VS Code's remote development mode). Conceptually, your local OS runs VS Code, and the VS code connects to the remote OS running in a docker container. In this way, you can edits the files in the remote OS via VS Code on your local OS, and run all the labs on the remote OS. In the docker container, we have already setup everything (all necessary tools and dependencies) for you. Note that the docker runs on your local OS.
 
 ![](../images/principle_of_vscode_remote_development.png)
 
 
-### The Docker container
+## The Docker container
 
 - Ubuntu 22.04, LLVM 19
 
 :star: You local machine needs to have at least 15GB disk space and 8GB memory to run the docker container.
 
-### What you need to install?
+## What you need to install?
 
 - [Docker](https://www.docker.com/)
 - [VS code](https://code.visualstudio.com/Download)
 
-### Instructions for setting up lab environment
+## Instructions for setting up lab environment
 
-#### Step 1. 
+### Step 1. 
 For this course, we will use Docker containers with VS Code to ensure everyone uses a consistent development environment for the labs. Thus, you need to install <a href="https://www.docker.com/">docker</a> on your local machine[^1].
 
 
 ![](../images/course-vm-d.jpg)
 
-#### Step 2.  
+### Step 2.  
 After this, install <a href="https://code.visualstudio.com/Download">VS Code</a> and within VS Code install `Remote Development` from `Extensions`. 
 
 ![](../images/remote_development.png)
@@ -33,7 +33,7 @@ Within VS Code, we also recommend you to install `GitHub Repositories` from `Ext
 
 ![alt text](../images/github_repositories.png)
 
-#### Step 3. 
+### Step 3. 
 Clone the repository of our respository ([ecnu-sa-labs](https://github.com/ecnu-sa-labs/ecnu-sa-labs)) on your local machine.
 In this repository, we provide the labs in the folders like `lab1`, `lab2`, etc.
 In each lab, we provide a configuration file `.devcontainer/devcontainer.json`[^2] that instructs VS Code to set up a development environment using an appropriate docker image and various other configuration options. 
@@ -62,7 +62,7 @@ Here is an example: `.devcontainer/devcontainer.json`,
 
 
 
-#### Step 4. 
+### Step 4. 
 To start working on a lab, open the lab in a **NEW** VS Code window. 
 
 :star: Note that you need to open the lab folder (e.g., `lab1`) in a new VS Code window.

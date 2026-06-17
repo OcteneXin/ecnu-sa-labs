@@ -4,7 +4,7 @@
 
 ## 目标
 
-在本实验中，你将应用基于性质的测试，基于 [Hypothesis](https://github.com/HypothesisWorks/hypothesis) 来验证二叉搜索树的实现。Hypothesis 是 Python 中一个流行的基于性质的测试工具。通过本实验，你将学习如何定义不同形式的性质以进行有效的测试。
+在本实验中，你将应用基于性质的测试，基于 [Hypothesis](https://github.com/HypothesisWorks/hypothesis) 来验证二叉搜索树的实现。Hypothesis 是 Python 中一个流行的基于性质的测试工具。通过本实验，你将学习如何为有效测试定义不同形式的性质。
 
 ## 环境配置
 
@@ -26,20 +26,20 @@ lab4$ pip install -r requirements.txt  # 安装所需的包
 2. 其右子树中所有节点的键都大于该节点自身的键。
 3. 键通常是唯一的。
 
-因此，中序遍历——按照左、根、右的顺序访问节点——总是会产生严格升序的键序列，如下例所示。
+因此，中序遍历——按左、根、右的顺序访问节点——总是会生成严格升序的键序列，如下例所示。
 
 <div align="center">
 <img src="../images/lab4-bst-example1.png"
   style="height: auto; width: 50%">
 </div>
 
-在本实验中，`lab4/src/BST.py` 给出了二叉搜索树的实现。该 BST 实现支持任何可比较类型的键和任何类型的值，以及四个核心操作 `insert`、`delete`、`find` 和 `union`。请仔细阅读代码以理解其实现。
+在本实验中，`lab4/src/BST.py` 提供了二叉搜索树的实现。该 BST 实现支持任何可比较类型的键和任何类型的值，以及四个核心操作：`insert`、`delete`、`find` 和 `union`。请仔细阅读代码以理解其实现。
 
 ### Hypothesis
 
-Hypothesis 是一个实现了基于性质的测试的 Python 库。基于性质的测试根据给定的某些性质来验证函数（或模块，甚至系统）的正确性。它使用大量自动生成的测试用例，而不是单个测试用例，来有效地对函数进行压力测试。如果发现某些性质被违反，它会缩小并返回反例输入。
+Hypothesis 是一个实现基于性质的测试的 Python 库。基于性质的测试根据给定的某些性质来验证函数（或模块，甚至系统）的正确性。它使用大量自动生成的测试用例，而不是单个测试用例，来有效地对函数进行压力测试。如果发现某些性质被违反，它会缩小并返回反例输入。
 
-在下面的代码中，我们展示了如何使用经典的*基于示例的测试*来测试一个 `sort` 函数（参见 `test_sort_by_example`），以及如何使用*基于性质的测试*（基于 Hypothesis，参见 `test_sort_by_property`）来测试这个 `sort` 函数。这里，这个 `sort` 函数按升序对数字进行排序。
+在下面的代码中，我们展示了如何使用经典的*基于示例的测试*来测试一个 `sort` 函数（参见 `test_sort_by_example`），以及如何使用*基于性质的测试*（基于 Hypothesis，参见 `test_sort_by_property`）来测试这个 `sort` 函数。这里，`sort` 函数将数字按升序排序。
 
 ```python
 # 基于示例的测试
@@ -81,7 +81,7 @@ st.dictionaries(st.text(), st.integers())  # 字典
 st.tuples(st.integers(), st.text())        # 元组
 
 # 自定义策略
-st.one_of(st.integers(), st.text())        # 多种类型中的一种
+st.one_of(st.integers(), st.text())        # 多种类型之一
 ```
 
 在本实验中，`lab4/src/test_strategies.py` 已经实现了两个策略，即 `keys_strategy` 和 `trees_strategy`：
@@ -107,9 +107,9 @@ trees_strategy = st.lists(
 
 > 设计目的是：(1) 受限范围 (-25 到 25) 增加了键冲突（同一个键出现多次）的概率，以模拟 BST 的真实使用场景；(2) 完整范围确保你也能用多样化、间隔大的键进行测试。这种设计通过在冲突场景和一般情况之间取得平衡，使测试更有效。
 
-+ `trees_strategy`：它生成最多包含 50 个 (键, 值) 对的随机 BST 对象，并且键是唯一的。
++ `trees_strategy`：它生成最多包含 50 个（键，值）对的随机 BST 对象，并且键是唯一的。
 
-> 在内部，此策略使用 `insert` 操作添加带有 (键, 值) 的节点并构建 BST。
+> 在内部，此策略使用 `insert` 操作来添加带有（键，值）的节点并构建 BST。
 
 #### 缩小
 
@@ -117,9 +117,9 @@ Hypothesis 的一个关键特性是缩小。如果一个测试用例失败，它
 
 ### Pytest
 
-Pytest 是一个强大的 Python 测试框架，它简化了测试的创建和执行。它具有自动测试发现、全面的错误报告和丰富的插件生态系统。
+Pytest 是一个强大的 Python 测试框架，简化了测试的创建和执行。它具有自动测试发现、全面的错误报告和丰富的插件生态系统。
 
-为了让你熟悉 Pytest，你可以在 `lab4/tests` 目录下运行 `lab4/tests/simple_test.py`，它测试了 BST 的一个有 bug 的版本（对应于 `lab4/bugs/bug1.py`）：
+为了让你熟悉 Pytest，你可以在 `lab4/tests` 目录下运行 `lab4/tests/simple_test.py`，该测试测试了一个有缺陷的 BST 版本（对应于 `lab4/bugs/bug1.py`）：
 
 ```bash
 lab4/tests$ pytest simple_test.py -q --tb=no # 简洁的输出结果
@@ -151,10 +151,10 @@ lab4/tests$ pytest simple_test.py -v --tb=short # 详细的输出结果
 .
 |-- bugs
 |   |-- __init__.py
-|   |-- bug1.py     # 在 find 和 union 中植入了 bug，旨在被 test1.py 发现
-|   |-- bug2.py     # 在 delete 和 union 中植入了 bug，旨在被 test2.py 发现
-|   |-- bug3.py     # 在 delete 中植入了 bug，旨在被 test3.py 发现
-|   `-- bug4.py     # 在 delete 和 union 中植入了 bug，旨在被 test4.py 发现
+|   |-- bug1.py     # 在 find 和 union 中植入了错误，旨在被 test1.py 发现
+|   |-- bug2.py     # 在 delete 和 union 中植入了错误，旨在被 test2.py 发现
+|   |-- bug3.py     # 在 delete 中植入了错误，旨在被 test3.py 发现
+|   `-- bug4.py     # 在 delete 和 union 中植入了错误，旨在被 test4.py 发现
 |-- requirements.txt
 |-- src
 |   |-- BST.py               # BST 数据结构的正确实现
@@ -164,7 +164,7 @@ lab4/tests$ pytest simple_test.py -v --tb=short # 详细的输出结果
 `-- tests
     |-- conftest.py      # 运行时环境配置和测试报告生成
     |-- hypothesis.ini   # Hypothesis 配置
-    |-- makefile         # 运行脚本，包括 all, clean, test1, test2, test3, test4
+    |-- makefile         # 运行脚本，包括 all、clean、test1、test2、test3、test4
     |-- simple_test.py   # BST 的简单测试
     |-- test1.py         # TODO1：为测试 find 和 delete 定义有效性性质。
     |-- test2.py         # TODO2：为测试 delete 和 union 定义后置条件性质。
@@ -172,25 +172,26 @@ lab4/tests$ pytest simple_test.py -v --tb=short # 详细的输出结果
     `-- test4.py         # TODO4：为测试 delete 和 union 定义基于模型的性质。
 ```
 
-### BST 中的性质与植入的 Bug
+### BST 中的性质与植入的错误
 
-在本实验中，你将在验证 BST 的背景下学习并定义以下四种类型的性质。你需要定义不同的性质来捕获我们植入到 BST 中的 bug。玩得开心！
+在本实验中，你将在验证 BST 的背景下学习并定义以下四种类型的性质。
+你需要定义不同的性质来捕获我们植入 BST 中的错误。祝你玩得开心！
 
-| 性质类型           | 目标方法       | 要识别的 Bug | Bug 描述                                                     |
-| :----------------- | :------------- | :------------ | :----------------------------------------------------------- |
-| 有效性性质         | `find`, `union`   | bug1.py - BUG(1) | 在 `find(key)` 中：错误地将左子树赋给了右子树 |
-|                    |                | bug1.py - BUG(2) | 在 `union(bst1, bst2)` 中：错误地将 bst1 作为 bst2 的左子树 |
-| 后置条件性质       | `delete`, `union` | bug2.py - BUG(1) | 在 `delete(key)` 中：错误地选择了搜索方向。      |
-|                    |                | bug2.py - BUG(2) | 在 `union` 中：当 bst1 和 bst2 的键相同时，错误地优先考虑 bst2 |
-| 蜕变性质           | `delete`, `union` | bug3.py - BUG(1) | 在 `delete(key)` 中：错误地选择了搜索方向。      |
-| 基于模型的性质     | `delete`, `union` | bug4.py - BUG(1) | 在 `delete(key)` 中：错误地选择了要删除的子树 |
-|                    |                | bug4.py - BUG(2) | 在 `union(bst1, bst2)` 中：当 bst1 和 bst2 的键相同时，错误地优先考虑 bst2 |
+| 性质类型         | 目标方法      | 要识别的错误 | 错误描述                                                     |
+| :--------------- | :------------ | :----------- | :----------------------------------------------------------- |
+| 有效性性质       | `find`, `union` | bug1.py - BUG(1) | 在 `find(key)` 中：错误地将左子树赋给右子树 |
+|                  |               | bug1.py - BUG(2) | 在 `union(bst1, bst2)` 中：错误地将 bst1 作为 bst2 的左子树 |
+| 后置条件性质     | `delete`, `union` | bug2.py - BUG(1) | 在 `delete(key)` 中：错误地选择了搜索方向。      |
+|                  |               | bug2.py - BUG(2) | 在 `union` 中：当 bst1 和 bst2 的键相同时，错误地优先选择 bst2 |
+| 蜕变性质         | `delete`, `union` | bug3.py - BUG(1) | 在 `delete(key)` 中：错误地选择了搜索方向。      |
+| 基于模型的性质   | `delete`, `union` | bug4.py - BUG(1) | 在 `delete(key)` 中：错误地选择了要删除的子树 |
+|                  |               | bug4.py - BUG(2) | 在 `union(bst1, bst2)` 中：当 bst1 和 bst2 的键相同时，错误地优先选择 bst2 |
 
 ### 有效性性质
 
 无论执行了哪个操作（`insert`、`delete`、`find` 和 `union`），二叉搜索树都应始终满足一个有效性性质：*树中的键应该是有序的*——对于树中的每个节点，(1) 其左子树中所有节点的键都小于该节点自身的键，(2) 其右子树中所有节点的键都大于该节点自身的键。
 
-例如，我们可以使用此有效性性质来检查执行 `insert` 和 `delete` 操作后 BST 的有效性。
+例如，我们可以使用这个有效性性质来检查执行 `insert` 和 `delete` 操作后 BST 的有效性。
 
 ```python
 # 空树是一棵有效的二叉搜索树。
@@ -214,7 +215,7 @@ def test_delete_valid(key: int, bst: BST[int,int]) -> None:
 
 (2) 基于你定义的有效性性质，你需要在 `lab4/tests/test1.py` 中编写相关代码，分别检查两个核心操作 `find` 和 `union` 是否遵守有效性性质。你可以在代码注释中找到一些提示。
 
-之后，你可以运行以下命令来确认有效性性质是否能成功找到 `lab4/bugs/bug1.py` 中植入的两个 bug。
+之后，你可以运行以下命令来确认有效性性质是否能成功找到 `lab4/bugs/bug1.py` 中植入的两个错误。
 
 ```bash
 lab4/tests$ make test1
@@ -223,7 +224,7 @@ lab4/tests$ make test1
 lab4/tests$ pytest -v test1.py --tb=short
 ```
 
-你应该获得以下测试结果，并可以在 `lab4/tests/report/test1` 中找到缩小的测试：
+你应该获得以下测试结果，并能在 `lab4/tests/report/test1` 中找到缩小的测试用例：
 
 ```tex
 Run Validity Testing (test1.py)...
@@ -264,7 +265,7 @@ def test_find_post_absent(key: int, bst: BST[int,int]) -> None:
 
 你需要在 `lab4/tests/test2.py` 中分别为两个核心操作 `delete` 和 `union` 定义一些后置条件性质。你可以在代码注释中找到一些提示。
 
-之后，你可以运行以下命令来确认你的性质是否能成功找到 `lab4/bugs/bug2.py` 中植入的两个 bug。
+之后，你可以运行以下命令来确认你的性质是否能成功找到 `lab4/bugs/bug2.py` 中植入的两个错误。
 
 ```bash
 lab4/tests$ make test2
@@ -273,7 +274,7 @@ lab4/tests$ make test2
 lab4/tests$ pytest -v test2.py --tb=short
 ```
 
-你应该获得以下测试结果，并可以在 `lab4/tests/report/test2` 中找到缩小的测试：
+你应该获得以下测试结果，并能在 `lab4/tests/report/test2` 中找到缩小的测试用例：
 
 ```bash
 Run Postconditions Testing (test2.py)...
@@ -286,12 +287,12 @@ FAILED test2.py::test_union_post - assert 1 == 0
 
 ### 蜕变性质
 
-蜕变测试是在许多上下文中解决 Oracle 问题的一种成功方法。基本思想是：即使可能难以预测函数调用（如 `insert(key, value)`）的预期结果，我们仍然可以表达此结果与相关调用的结果之间的预期关系。例如，如果在调用 `insert(key, value)` 之前向 BST 中插入一个额外的键，我们期望该额外的键也出现在最终的 BST 中。我们将这种蜕变关系形式化为以下蜕变性质：
+蜕变测试是在许多上下文中解决 oracle 问题的一种成功方法。基本思想是：即使预测函数调用（如 `insert(key, value)`）的预期结果可能很困难，我们仍然可以表达这个结果与相关调用的结果之间的预期关系。例如，如果在调用 `insert(key, value)` 之前向 BST 中插入一个额外的键，我们期望该额外的键也出现在最终的 BST 中。我们将这种蜕变关系形式化为以下蜕变性质：
 
 ```python
-# 在 (key1, value1) 和 (key2, value2) 上的两个 insert 操作与其预期结果之间的蜕变关系
+# 在 (key1, value1) 和 (key2, value2) 上执行两次 insert 操作与其预期结果之间的蜕变关系
 # 如果键相同，则插入 value2（而不是 value1）；否则，同时插入 value1 和 value2。
-# 等效函数，判断两个 BST 在包含的 (键, 值) 对方面是否等效，忽略树结构之间的差异。
+# 等效函数，用于判断两个 BST 在包含的（键，值）对方面是否等效，同时忽略树结构之间的差异。
 @given(keys_strategy, st.integers(), keys_strategy, st.integers(), trees_strategy)
 def test_insert_metamorph_by_insert(key1: int, value1: int, key2: int, value2: int, bst: BST[int,int]) -> None:
     inserted = bst.insert(key1, value1).insert(key2, value2)
@@ -299,7 +300,7 @@ def test_insert_metamorph_by_insert(key1: int, value1: int, key2: int, value2: i
     assert equivalent(inserted, expected)
 ```
 
-你可能想知道为什么我们需要在前面的性质中检查 key1 和 key2 是否相同。原因是 `insert` 操作遵循*后插入者获胜*的原则。因此，以下蜕变关系是有 bug 的，可能会导致测试中的误报。
+你可能想知道为什么我们需要检查 key1 和 key2 是否相同。原因是 `insert` 操作遵循*最后插入者获胜*的原则。因此，以下蜕变关系是有缺陷的，可能导致测试中的误报。
 
 ```python
 @given(keys_strategy, st.integers(), keys_strategy, st.integers(), trees_strategy)
@@ -312,11 +313,11 @@ def test_insert_metamorph_by_insert(key1: int, value1: int, key2: int, value2: i
 
 #### TODO3
 
-(1) 在本节中，你需要在 `lab4/src/BSTUtils.py` 中定义 `equivalent` 函数，该函数检查两个 BST 在包含的 (键, 值) 对方面是否等效，忽略树结构之间的差异。你可以在代码注释中找到一些提示。
+(1) 在本节中，你需要在 `lab4/src/BSTUtils.py` 中定义 `equivalent` 函数，该函数检查两个 BST 在包含的（键，值）对方面是否等效，同时忽略树结构之间的差异。你可以在代码注释中找到一些提示。
 
-(2) 基于你实现的 `equivalent` 函数，你需要在 `lab4/tests/test3.py` 中分别为操作 `delete` 和 `union` 提出一些蜕变性质，以识别 `lab4/bugs/bug3.py` 中植入的一个 bug。你可以在代码注释中找到一些提示。
+(2) 基于你实现的 `equivalent` 函数，你需要在 `lab4/tests/test3.py` 中分别为操作 `delete` 和 `union` 提出一些蜕变性质，以识别 `lab4/bugs/bug3.py` 中植入的一个错误。你可以在代码注释中找到一些提示。
 
-之后，你可以运行以下命令来确认你的性质是否能成功找到 `lab4/bugs/bug3.py` 中植入的一个 bug。请注意，我们只在 `delete` 中植入了一个 bug，`union` 是正确的，没有 bug。如果你的性质在 `union` 中发现了 bug，你可能需要仔细检查你的性质定义是否正确。
+之后，你可以运行以下命令来确认你的性质是否能成功找到 `lab4/bugs/bug3.py` 中植入的一个错误。请注意，我们只在 `delete` 中植入了一个错误，`union` 是正确的，没有错误。如果你的性质在 `union` 中发现了错误，你可能需要仔细检查你的性质定义是否正确。
 
 ```python
 lab4/tests$ make test3
@@ -325,7 +326,7 @@ lab4/tests$ make test3
 lab4/tests$ pytest -v test3.py --tb=short
 ```
 
-你应该获得以下结果，并可以在 `lab4/tests/report/test3` 中找到缩小的测试：
+你应该获得以下结果，并能在 `lab4/tests/report/test3` 中找到缩小的测试用例：
 
 ```tex
 Run Metamorphic Testing (test3.py)...
@@ -381,13 +382,13 @@ def test_insert_model(key: int, value: int, bst: BST[int,int]) -> None:
 
 #### TODO4
 
-按照上面关于 `insert` 的示例，你需要分别为操作 `delete` 和 `union` 定义一些基于模型的性质，以识别 `lab4/bugs/bug4.py` 中植入的两个 bug：
+按照上面关于 `insert` 的示例，你需要分别为操作 `delete` 和 `union` 定义一些基于模型的性质，以识别 `lab4/bugs/bug4.py` 中植入的两个错误：
 
 + 对于 `delete`，你可以对 BST 和一个抽象数据结构（例如，一个 `list`）执行 `delete` 操作，以确定最终的集合是否等效。
 
 + 对于 `union`，你可以对两个 BST 及其对应的抽象数据结构（例如，两个 `list`）执行 `union` 操作，以确定最终的集合是否等效。
 
-之后，你可以运行以下命令来确认你的性质是否能成功找到 `lab4/bugs/bug4.py` 中植入的两个 bug。
+之后，你可以运行以下命令来确认你的性质是否能成功找到 `lab4/bugs/bug4.py` 中植入的两个错误。
 
 ```python
 lab4/tests$ make test4
@@ -396,7 +397,7 @@ lab4/tests$ make test4
 lab4/tests$ pytest -v test4.py --tb=short
 ```
 
-你应该获得以下结果，并可以在 `lab4/tests/report/test4` 中找到缩小的测试：
+你应该获得以下结果，并能在 `lab4/tests/report/test4` 中找到缩小的测试用例：
 
 ```bash
 Run Model-based Properties Testing (test4.py)...
@@ -408,7 +409,7 @@ FAILED test4.py::test_union_model - assert {(0, 1)} == {(0, 0)}
 
 ## 提交
 
-*注意：我们将验证你提交的代码是否针对 bug。如果你的代码是针对 bug 的，你的分数可能会相应地被扣减。*
+*注意：我们将验证你提交的代码是否针对错误。如果你的代码是针对错误的，你的分数可能会被相应扣除。*
 
 完成实验后，通过提交并推送 `lab4/` 下的更改来提交你的代码。具体来说，你需要提交对 `lab4/src/BSTUtils.py`、`lab4/tests/test1.py`、`lab4/tests/test2.py`、`lab4/tests/test3.py`、`lab4/tests/test4.py` 的更改。
 

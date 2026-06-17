@@ -37,7 +37,7 @@ MARKDOWN_FILE_ARRAY = [
     'lab7.md',
     'lab8.md',
     'lab9-MiniCREST.md',
-    'lab9.md'
+    # 'lab9.md' # 格式有问题，暂时先不用来生成
 ]
 
 OUTPUT_FILE = 'output.md'

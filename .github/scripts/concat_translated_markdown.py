@@ -1,5 +1,10 @@
-YAML_HEADER = '''
----
+from pathlib import Path
+
+# pdf元数据，不要的参数可以删除
+# toc: 是否生成目录
+# toc-own-page：目录单独一页
+# titlepage: 是否生成封面
+YAML_HEADER = '''---
 title: "软件分析与测试实验手册"
 author: [ecnu-sa-labs]
 date: "2026-06-01"
@@ -11,3 +16,38 @@ titlepage: true
 
 '''
 
+# 以下文件的根目录
+BASE_FOLDER = "lab_manual_cn"
+
+# 用于生成pdf的文件名，严格按顺序排列
+MARKDOWN_FILE_ARRAY = [
+    'course-vm.md',
+    'lab1.md',
+    'lab2.md',
+    'lab3.md',
+    'lab4.md',
+    'lab5.md',
+    'lab6.md',
+    'lab7.md',
+    'lab8.md',
+    'lab9-MiniCREST.md',
+    'lab9.md'
+]
+
+OUTPUT_FILE = 'output.md'
+
+if __name__ == "__main__":
+    final_markdown = YAML_HEADER
+
+    for file in MARKDOWN_FILE_ARRAY:
+        input_path = Path(f"{BASE_FOLDER}/{file}")
+        with input_path.open("r", encoding="utf-8") as f:
+            original_content = f.read()
+
+        final_markdown += original_content
+
+        final_markdown += '\n'
+
+    output_path = Path(f"{BASE_FOLDER}/{OUTPUT_FILE}")
+    with output_path.open("w", encoding="utf-8") as f:
+        f.write(final_markdown)    

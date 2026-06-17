@@ -1,18 +1,18 @@
 ## 动态污点分析
 
-编写一个针对 C/C++ 程序的动态污点分析工具，作为 LLVM pass，用于检测程序中的 `ControlFlowHijack` 和 `InjectionAttack` 问题。
+编写一个针对 C/C++ 程序的动态污点分析工具，作为 LLVM pass 来检测程序中的 `ControlFlowHijack` 和 `InjectionAttack` 问题。
 
-### 目标
-在本实验中，你将在 IR 中间表示上构建一个动态污点分析工具。通过实现污点源、污点传播策略和污点汇聚点，你将能够追踪程序内污点的传播，从而检测潜在的安全问题。
+### 实验目标
+在本实验中，你将在 IR 中间表示上构建一个动态污点分析工具。通过实现污点源、污点传播策略和污点汇聚点，你将能够追踪污点在程序内部的传播，从而检测潜在的安全问题。
 
-### 环境设置
+### 环境搭建
 Lab7 的代码位于 `/lab7/` 目录下。
 
-- 在 VS Code 中打开 lab7 文件夹，使用 VS Code 的 'Open Folder' 选项。
-- 确保 Docker 在你的机器上运行。
-- 按 F1 打开 VS Code 命令面板；搜索并选择 Reopen in Container。
-- 这将在 VS Code 中为本实验设置开发环境。
-- 在开发环境中，Lab 6_2 的骨架代码将位于 /lab7 目录下。
+- 在 VS Code 中使用“打开文件夹”选项打开 lab7 文件夹。
+- 确保 Docker 正在你的机器上运行。
+- 按 F1 打开 VS Code 命令面板；搜索并选择“Reopen in Container”。
+- 这将在 VS Code 中为本实验设置好开发环境。
+- 在开发环境中，Lab6_2 的骨架代码将位于 `/lab7` 目录下。
 - 之后，如果 VS Code 提示你为实验选择一个工具包，请选择 Clang 8。
 
 #### lab7 的项目结构：
@@ -32,14 +32,14 @@ Lab7 的代码位于 `/lab7/` 目录下。
 ```
 
 #### 步骤 1
-以下命令使用 CMake/Makefile 模式设置实验环境。
+以下命令使用 CMake/Makefile 模式来设置实验环境。
 ```
 /lab7$ mkdir -p build && cd build
 /lab7/build$ cmake ..
 /lab7/build$ make
 ```
 
-你应该会看到在 lab7/build 目录中创建了几个文件。一个名为 `DynTaintAnalysisPass.so` 的 LLVM pass 将作为链接 `lab7/src` 下的 `DynTaintAnalysisPass.cpp` 和 `Instrument.cpp` 的结果生成，以及一个名为 `libruntime.so` 的运行时库，对应于 `lab7/lib/runtime.cpp`。这些都是你稍后将修改的源文件。如果你还记得 lab2 的项目构建步骤，这里的步骤与使用动态分析 pass 的部分几乎相同。
+你应该会看到在 lab7/build 目录下创建了几个文件。一个名为 `DynTaintAnalysisPass.so` 的 LLVM pass 将作为链接 `lab7/src` 下的 `DynTaintAnalysisPass.cpp` 和 `Instrument.cpp` 的结果生成，同时还会生成一个名为 `libruntime.so` 的运行时库，对应于 `lab7/lib/runtime.cpp`。这些都是你稍后需要修改的源文件。如果你还记得 lab2 的项目构建步骤，这里的步骤与使用动态分析 pass 的部分几乎完全相同。
 
 #### 步骤 2
 像之前的实验一样生成 LLVM IR。
@@ -50,14 +50,14 @@ Lab7 的代码位于 `/lab7/` 目录下。
 ```
 
 #### 步骤 3
-使用 opt 在编译后的 C++ 程序上运行提供的 DynTaintAnalysisPass pass。此步骤生成一个带有运行时函数调用的插桩程序。
+使用 opt 在编译好的 C++ 程序上运行提供的 DynTaintAnalysisPass pass。这一步会生成一个带有运行时函数调用的插桩后程序。
 ```
 /lab7/test$ opt -load ../build/DynTaintAnalysisPass.so -DynTaintAnalysisPass -S InjectionAttack.ll -o InjectionAttack.dynamic.ll
 /lab7/test$ opt -load ../build/DynTaintAnalysisPass.so -DynTaintAnalysisPass -S ControlFlowHijack.ll -o ControlFlowHijack.dynamic.ll
 ```
 
 #### 步骤 4
-接下来，编译插桩后的程序并将其与运行时库链接，以生成一个独立的可执行文件：
+接下来，编译插桩后的程序并将其与运行时库链接，生成一个独立的可执行文件：
 ```
 /lab7/test$ clang -o InjectionAttack -L../build -lruntime InjectionAttack.dynamic.ll
 /lab7/test$ clang -o ControlFlowHijack -L../build -lruntime ControlFlowHijack.dynamic.ll
@@ -127,7 +127,7 @@ You've discovered the secret value!
 #### 被分析的程序
 我们提供了两个待分析的程序：`InjectionAttack.cpp` 和 `ControlFlowHijack.cpp`。
 
-在 `InjectionAttack.cpp` 中，当用户向 `/bin/cat` 输入所需的文件名参数时，如果添加了额外内容，则可以不受检查地运行其他命令。例如，如果用户输入 `example.txt ; ls -al`，命令字符串变为：`/bin/cat example.txt ; ls -al`。第一个命令 (`/bin/cat example.txt`) 被执行以显示 `example.txt` 的内容，然后第二个命令 (`ls -al`) 不受任何限制地执行。这允许攻击者在系统上执行任意命令，导致潜在的未授权访问或文件操作。
+在 `InjectionAttack.cpp` 中，当用户向 `/bin/cat` 输入所需的文件名参数时，如果添加了一些额外内容，则可以不受检查地运行其他命令。例如，如果用户输入 `example.txt ; ls -al`，命令字符串将变为：`/bin/cat example.txt ; ls -al`。第一个命令 (`/bin/cat example.txt`) 被执行以显示 `example.txt` 的内容，然后第二个命令 (`ls -al`) 会在没有任何限制的情况下被执行。这使得攻击者可以在系统上执行任意命令，从而导致潜在的未授权访问或文件操作。
 ```
 char cmd[2048] = "/bin/cat ";
 char filename[1024];
@@ -152,7 +152,7 @@ drwxrwxrwx 1 root root   512 Nov 26 08:45 ..
 -rw-r--r-- 1 root root     0 Nov 26 09:22 otherfile.secret
 ```
 
-在 `ControlFlowHijack.cpp` 中，当用户/黑客向 `mem.buffer` 写入数据而不检查缓冲区大小时，会覆盖后续内容；在这种情况下，要成功劫持控制流，用户必须恰好输入 9 个字符，且第 9 个字符为 'A'。这会将 `mem.data` 覆盖为值 65，导致 `secret_value` 被计算为 97。因此，用户的输入可以**意外地**影响程序的控制流，导致控制流劫持（正常情况下，`secret_value` 不会等于 97）。
+在 `ControlFlowHijack.cpp` 中，当用户/黑客向 `mem.buffer` 写入数据而未检查缓冲区大小时，会覆盖其后内存中的内容；在这种情况下，要成功劫持控制流，用户必须恰好输入 9 个字符，且第 9 个字符是 'A'。这会将 `mem.data` 覆盖为值 65，导致 `secret_value` 被计算为 97。因此，用户的输入可以**意外地**影响程序的控制流，导致控制流劫持（正常情况下，`secret_value` 不会等于 97）。
 ```
 struct Memory{
         char buffer[8]; 
@@ -193,36 +193,36 @@ You've discovered the secret value!
 
 
 #### 动态污点分析
-污点分析由三个组件组成：`污点源`/`污点传播策略`/`污点汇聚点`
+污点分析包含三个组成部分：`污点源`/`污点传播策略`/`污点汇聚点`
 
 - 污点源
 
-    污点源是程序中可能引入不可信或不安全数据的输入点。这些输入点可能是用户输入、文件读取、网络数据等。
+    污点源是程序中那些可能引入不可信或不安全数据的输入点。这些输入点可能是用户输入、文件读取、网络数据等。
 
     提示：在我们的两个示例中，仅将用户输入用作污点源，但在实际应用中，文件读取和网络数据传输更为常见。
 
 - 污点传播策略
 
-    这部分可以简单概括为：如果源操作数被污染，则污点应传递给目标操作数。
+    这部分可以简单概括为：如果源操作数被污染，那么污点应该传递给目标操作数。
     
-    例如，`%b = load i32, ptr %a, align 4` 从 `%a` 中的地址加载一个 i32 类型的数据到 `%b`，源操作数是 `%a`，目标操作数是 `%b`，那么当 %a 被污染时，%b 也需要被污染。
+    例如，`%b = load i32, ptr %a, align 4` 从 `%a` 中的地址加载一个 i32 类型的数据到 `%b`，源操作数是 `%a`，目标操作数是 `%b`，那么当 `%a` 被污染时，`%b` 也需要被污染。
 
     除了普通指令外，一些函数调用也会进行污点传播，在我们的例子中，`strcat` 连接两个字符串，如果其中一个字符串被污染，那么污点也需要传播到连接后的结果。
 
 - 污点汇聚点
 
-    当到达敏感的程序位置/敏感的程序行为时，会添加一个污点汇聚点来检查特定变量是否被污染。
+    当到达一个敏感的程序位置/敏感的程序行为时，会添加一个污点汇聚点来检查特定变量是否被污染。
     
     在我们的两个示例中，在调用 system/check_secret 之前，需要检查 system/check_secret 的参数变量是否被污染。
 
 
 
 #### 我们工具的特性
-不同的污点分析工具在数据结构和污点处理方法上具有不同的特性。在此，我们声明我们工具的一些特性：
+不同的污点分析工具在数据结构和污点处理方法上具有不同的特性。这里，我们声明我们工具的一些特性：
 
 - 污点粒度
 
-    该工具的污点粒度是变量和字节的混合：对于非指针变量，我们以变量粒度进行追踪；对于指针变量，以字节粒度进行追踪。
+    本工具的污点粒度是变量和字节的混合：对于非指针变量，我们以变量为粒度进行追踪；对于指针变量，则以字节为粒度进行追踪。
 
 - 污点颜色
 
@@ -230,13 +230,13 @@ You've discovered the secret value!
 
 - 污点数据结构
 
-    我们使用集合来存储污点信息。结合上述两个特性，在 `runtime.cpp` 中，你将找到两个集合 `taintedPtrVars` 和 `taintedVars`。对于一个非指针类型的变量，如果其名称在 `taintedVars` 中，则该变量被视为被污染；对于一个指针类型的变量，如果其运行时地址在 `taintedPtrVars` 中，则表示该变量被污染。
+    我们使用集合来存储污点信息。结合上述两个特性，在 `runtime.cpp` 中，你会找到两个集合 `taintedPtrVars` 和 `taintedVars`。对于一个非指针类型的变量，如果它的名字在 `taintedVars` 中，则该变量被视为被污染；对于一个指针类型的变量，如果它的运行时地址在 `taintedPtrVars` 中，则表示该变量被污染。
     
     一个更复杂的工具可能会使用诸如影子内存之类的数据结构，这里进行了简化。
 
 - 支持的指令
 
-    该工具不支持所有指令类型，仅支持其中的一个子集，包括 TruncInst、GEPInst、StoreInst、LoadInst、BinaryOperator。要创建一个更全面和通用的工具，需要支持所有指令类型。
+    本工具不支持所有指令类型，仅支持其中的一部分，包括 TruncInst、GEPInst、StoreInst、LoadInst、BinaryOperator。要创建一个更全面和通用的工具，需要支持所有指令类型。
 
 - 对指针和非指针类型的不同处理
 
@@ -252,7 +252,7 @@ You've discovered the secret value!
     |LoadInst|`%dest` = load **ptr/i8**, **ptr** `%src`, align 8|ptr/int|ptr|
     |BinaryOperator|`%dest` = add nsw **i32** `%src1`, **i32** `%src2`|int|int|
     
-    因此，处理 StoreInst 污点传播的函数有两个版本：`StoreInstProcess` 和 `StoreInstProcessPtr`。类似地，在设置污点源（污点汇聚点）时，也会有 `TaintVal` (`CheckVal`) 和 `TaintPtrVal` (`CheckPtrVal`) 两个版本。
+    因此，处理 StoreInst 污点传播的函数有两个版本：`StoreInstProcess` 和 `StoreInstProcessPtr`。类似地，在设置污点源（污点汇聚点）时，也会有两个版本：`TaintVal` (`CheckVal`) 和 `TaintPtrVal` (`CheckPtrVal`)。
 
     对于 LoadInst，由于其源操作数必须是指针，因此可以通过源操作数的地址来确定是否需要污染，所以只有一个 Ptr 版本。
 
@@ -260,21 +260,21 @@ You've discovered the secret value!
 在代码/技术实现方面，动态污点分析需要以下三个步骤：   
 `1.` 开发插桩逻辑并将其打包为 LLVM pass；  
 `2.` 使用该 pass 对目标程序的 IR 文件进行插桩，插入对运行时函数的调用；  
-`3.` 将修改后的 IR 文件编译为可执行文件并运行。
+`3.` 将修改后的 IR 文件编译成可执行文件并运行。
 
 因此，在本实验中，我们需要完成插桩逻辑以及被插入的运行时函数，你将有以下 TODO 列表：
 
-- 在 `DynTaintAnalysisPass.cpp` 的主运行函数 `runOnFunction` 中，为各种指令和污点源相关函数（scanf, getchar）添加相应的插桩函数调用。这些插桩函数用于在特定位置插入运行时函数。
+- 在 `DynTaintAnalysisPass.cpp` 的主运行函数 `runOnFunction` 中，为各种指令和与污点源相关的函数（scanf, getchar）添加相应的插桩函数调用。这些插桩函数用于在特定位置插入运行时函数。
 - 在 `Instrument.cpp` 中完成 `Trunc` 和 `Load` 指令的插桩函数。
 - 在 `runtime.cpp` 中完成 `Store` 和 `BinaryOperator` 指令的运行时分析函数。
 
 #### 关于插桩
-本实验中的插桩方法类似于 lab2 的动态分析 pass。如果你忘记了一些细节，请回顾 **lab2 教程**中的 [Instrumentation Pass](https://github.com/ecnu-sa-labs/ecnu-sa-labs/blob/ff8658063073a4aa46afa6552bd18c281b477baf/lab_manual/lab2.md#instrumentation-pass) 和 [Inserting Instructions into LLVM code](https://github.com/ecnu-sa-labs/ecnu-sa-labs/blob/ff8658063073a4aa46afa6552bd18c281b477baf/lab_manual/lab2.md#inserting-instructions-into-llvm-code)。
+本实验中的插桩方法与 lab2 的动态分析 pass 类似。如果你忘记了一些细节，请回顾 **lab2 教程**中的 [Instrumentation Pass](https://github.com/ecnu-sa-labs/ecnu-sa-labs/blob/ff8658063073a4aa46afa6552bd18c281b477baf/lab_manual/lab2.md#instrumentation-pass) 和 [Inserting Instructions into LLVM code](https://github.com/ecnu-sa-labs/ecnu-sa-labs/blob/ff8658063073a4aa46afa6552bd18c281b477baf/lab_manual/lab2.md#inserting-instructions-into-llvm-code)。
 
 ### 提交
 完成实验后，通过提交并推送 lab7/ 下的更改来提交你的代码。具体来说，你需要提交对 `src/DynTaintAnalysisPass.cpp`、`src/Instrument.cpp` 和 `lib/runtime.cpp` 的更改。
 ```
    lab7$ git add src/DynTaintAnalysisPass.cpp src/Instrument.cpp lib/runtime.cpp
-   lab7$ git commit -m "your commit message here"
+   lab7$ git commit -m "你的提交信息"
    lab7$ git push
 ```

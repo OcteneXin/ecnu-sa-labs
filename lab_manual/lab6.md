@@ -5,7 +5,9 @@ Building a "division-by-zero" static analysis for a subset of the C language tha
 ### Objective 
 
 In this lab, you will build a static analyzer that detects potential divide-by-zero erros in C programs at compile-time.
+
 You will accomplish this by writing an LLVM pass.
+
 Since developing a static analyzer for a full-fledged language like C is a non-trivial endeavor, this lab will be split up into two parts. 
 
 ##### PART 1

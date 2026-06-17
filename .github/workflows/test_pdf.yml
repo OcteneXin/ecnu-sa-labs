@@ -13,11 +13,6 @@ jobs:
             lab_manual_cn/output.md --output=output/result.pdf --pdf-engine=xelatex
             --template .github/template/eisvogel.latex
             --from markdown
-            --shift-heading-level-by=-1
-            --toc-depth=2
-            --number-sections
-            --syntax-highlighting idiomatic
-            --top-level-division="chapter"
       - uses: actions/upload-artifact@v4
         with:
           name: output

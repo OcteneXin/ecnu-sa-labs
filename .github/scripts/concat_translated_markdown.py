@@ -1,9 +1,18 @@
 from pathlib import Path
 
-# pdf元数据，不要的参数可以删除
-# toc: 是否生成目录
-# toc-own-page：目录单独一页
-# titlepage: 是否生成封面
+# ------------------------pdf元数据，不要的参数可以删除--------------------------
+# toc                               是否生成目录
+# toc-own-page                      目录是否单独一页
+# titlepage                         是否生成封面
+# number-sections                   标题是否编号
+# toc-depth: 2                      目录最深层级
+# shift-heading-level-by: -1        编号偏移量，不要动
+# syntax-highlighting: idiomatic    代码块样式
+# ============以下3个必须同时删除，删除后，每个lab结束时将无法自动分页================
+# book                              是否采用书籍排版（每个大标题分页）
+# classoption: [oneside]            单栏排版
+# top-level-division: chapter       配合此排版使用
+# ===========================================================================
 YAML_HEADER = '''---
 title: "软件分析与测试实验手册"
 author: [ecnu-sa-labs]
@@ -12,6 +21,13 @@ lang: "zh"
 toc: true
 toc-own-page: true
 titlepage: true
+number-sections: true
+toc-depth: 2
+shift-heading-level-by: -1
+syntax-highlighting: idiomatic
+book: true
+classoption: [oneside]
+top-level-division: chapter
 ...
 
 '''

@@ -1,4 +1,4 @@
-# Setting up course lab environment
+## Setting up course lab environment
 
 Our labs use VScode and Docker containers to build a flexible, consistent and ready-to-use development environment. You can view the picture below to understand the architecture of our lab environment (a.k.a VS Code's remote development mode). Conceptually, your local OS runs VS Code, and the VS code connects to the remote OS running in a docker container. In this way, you can edits the files in the remote OS via VS Code on your local OS, and run all the labs on the remote OS. In the docker container, we have already setup everything (all necessary tools and dependencies) for you. Note that the docker runs on your local OS.
 

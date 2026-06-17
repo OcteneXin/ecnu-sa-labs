@@ -104,6 +104,7 @@ classoption: [oneside]
 [^2]: `devcontainer.json` 文件是一个 JSON 格式的配置文件，通常存放在项目根目录下的 `.devcontainer` 文件夹中。它定义了开发容器的配置信息，包括容器的基础镜像、需要安装的工具和扩展、环境变量等。通过这个文件，开发者可以确保项目在不同的开发环境中都能保持一致的运行状态。
 
 [^3]: 在 VS Code 中，命令面板是一个功能强大且用途广泛的工具，可以快速访问各种命令。在 Windows 和 Linux 上，您可以通过按 `Ctrl + Shift + P` 打开命令面板。在 macOS 上，使用 `Command + Shift + P`。
+
 ## 理解静态分析与动态分析
 
 理解软件分析的基本概念以及用于评估分析有效性的度量指标。
@@ -251,6 +252,7 @@ c_programs/test9.c:10:17: warning: Division by zero [core.DivideZero]
 [cmake-tutorial]: https://cmake.org/cmake/help/latest/guide/tutorial/index.html
 [makefile-tutorial]: https://www.gnu.org/software/make/manual/html_node/Simple-Makefile.html
 [learn-make-in-y-minutes]: https://learnxinyminutes.com/docs/make
+
 ## LLVM 框架
 
 理解 LLVM 框架：IR、API 和工具链。
@@ -633,6 +635,7 @@ submission.zip created successfully.
 [llvm-insert-inst]: https://releases.llvm.org/8.0.0/docs/ProgrammersManual.html#creating-and-inserting-new-instructions
 [llvm-insert-function]: https://llvm.org/doxygen/classllvm_1_1Module.html#a89b5f89041a0375f7ece431f29421bee
 [callinst-create]: https://llvm.org/doxygen/classllvm_1_1CallInst.html#a850d8262cd900958b3153c4aa080b2bb
+
 ## 构建一个模糊测试器
 
 构建一个覆盖引导的随机输入生成器（即"模糊测试器"），用于测试 C 程序。
@@ -926,6 +929,7 @@ lab3$ git push
 
 
 [fuzzing-book-mutaion]: https://fuzzingbook.org/html/MutationFuzzer.html
+
 # 基于性质的测试
 
 使用基于性质的测试来验证二叉搜索树的实现。
@@ -1345,6 +1349,7 @@ FAILED test4.py::test_union_model - assert {(0, 1)} == {(0, 0)}
    lab4$ git commit -m "你的提交信息"
    lab4$ git push
 ```
+
 ## Delta Debugging
 
 构建一个 delta debugger，用于最小化导致程序崩溃的输入——让用户更容易理解 bug。
@@ -1485,6 +1490,7 @@ lab5$ git add delta_debugger/delta.py
 lab5$ git commit -m "在此处填写你的提交信息"
 lab5$ git push
 ```
+
 ## 构建静态分析器（数据流分析）
 
 为包含分支和循环的 C 语言子集构建一个"除零"静态分析器。
@@ -1929,6 +1935,7 @@ lab6$ git push
 [CMake Ref]: https://en.wikipedia.org/wiki/CMake
 [Make Ref]: https://www.gnu.org/software/make/manual/html_node/Simple-Makefile.html#Simple-Makefile
 [Menagerie Link]: https://drive.google.com/open?id=1uhCWzfBxsaBQQ6NyMTY64Y6x_qRR1YQwiTpWT0_N2Xc
+
 ## 指针分析
 
 编写一个针对C程序的“除零”静态分析，作为LLVM pass，用于处理指针别名和动态分配的内存。
@@ -2256,6 +2263,7 @@ lab6$ git push
 ```
 
 [LLVM AllocaInst]: https://llvm.org/doxygen/classllvm_1_1AllocaInst.html
+
 ## 动态污点分析
 
 编写一个针对 C/C++ 程序的动态污点分析工具，作为 LLVM pass 来检测程序中的 `ControlFlowHijack` 和 `InjectionAttack` 问题。
@@ -2536,6 +2544,7 @@ You've discovered the secret value!
    lab7$ git commit -m "你的提交信息"
    lab7$ git push
 ```
+
 ## 动态符号执行
 
 使用 LLVM 和 Z3 为 C 程序构建一个动态符号执行引擎。
@@ -2893,6 +2902,7 @@ submission.zip created successfully.
 ```
 
 然后将提交文件上传到助教的邮箱。
+
 <!-- TOC --><a name="dynamic-symbolic-execution"></a>
 # 动态符号执行
 
@@ -3421,3 +3431,4 @@ _这是 `miniklee` 实现的类型。_
    lab8$ git commit -m "你的提交信息"
    lab8$ git push
 ```
+

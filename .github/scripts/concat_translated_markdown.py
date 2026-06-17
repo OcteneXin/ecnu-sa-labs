@@ -54,6 +54,9 @@ if __name__ == "__main__":
 
         final_markdown += '\n'
 
+        final_markdown += '\n'
+
+
     output_path = Path(f"{BASE_FOLDER}/{OUTPUT_FILE}")
     with output_path.open("w", encoding="utf-8") as f:
         f.write(final_markdown)    

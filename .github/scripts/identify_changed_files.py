@@ -2,7 +2,7 @@ import yaml
 import subprocess
 from pathlib import Path
 
-CONFIG_PATH = Path(".github/config/translate-list.yaml")
+CONFIG_PATH = Path(".github/config/translate-list.yml")
 
 
 # get changed file list in this commit

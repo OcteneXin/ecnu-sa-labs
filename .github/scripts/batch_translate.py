@@ -6,7 +6,7 @@ from gpt_translator import OpenaiTranslator
 
 
 CONFIG_PATH = Path(".github/config/translate-list.yml")
-API_KEY = os.getenv("DEEKSEEK_API_KEY")
+API_KEY = os.getenv("API_KEY")
 
 def translate_file(translator:OpenaiTranslator, reviewed_path: Path, input_path: Path, output_path: Path) -> None:
     """

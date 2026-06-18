@@ -14,7 +14,7 @@ classoption: [oneside]
 
 本实验课程使用 VScode 和 Docker 容器来构建一个灵活、一致且开箱即用的开发环境。你可以查看下图来了解实验环境的架构（即 VS Code 的远程开发模式）。从概念上讲，你的本地操作系统运行着 VS Code，而 VS Code 连接到运行在 Docker 容器中的远程操作系统。通过这种方式，你可以在本地操作系统上通过 VS Code 编辑远程操作系统中的文件，并在远程操作系统上运行所有实验。在 Docker 容器中，我们已经为你配置好了一切（所有必要的工具和依赖项）。请注意，Docker 运行在你的本地操作系统上。
 
-![](principle_of_vscode_remote_development.png)
+![](images/principle_of_vscode_remote_development.png)
 
 ## Docker 容器
 
@@ -32,16 +32,16 @@ classoption: [oneside]
 ### 第一步
 本课程中，我们将使用带有 VS Code 的 Docker 容器，以确保每个人在实验中使用一致的开发环境。因此，你需要在本地机器上安装 <a href="https://www.docker.com/">docker</a>[^1]。
 
-![](course-vm-d.jpg)
+![](images/course-vm-d.jpg)
 
 ### 第二步
 之后，安装 <a href="https://code.visualstudio.com/Download">VS Code</a>，并在 VS Code 中从 `Extensions` 安装 `Remote Development`。
 
-![](remote_development.png)
+![](images/remote_development.png)
 
 在 VS Code 中，我们还建议你从 `Extensions` 安装 `GitHub Repositories`。它让你可以直接在 Visual Studio Code 中快速浏览、搜索、编辑和提交到任何远程 GitHub 仓库。
 
-![alt text](github_repositories.png)
+![alt text](images/github_repositories.png)
 
 ### 第三步
 在你的本地机器上克隆我们的仓库（[ecnu-sa-labs](https://github.com/ecnu-sa-labs/ecnu-sa-labs)）。
@@ -76,7 +76,7 @@ classoption: [oneside]
 :star: 注意：你需要在一个新的 VS Code 窗口中打开实验文件夹（例如 `lab1`）。
 在 VS Code 中，转到 `File`，选择 `New Window`，找到并选择要打开的实验文件夹（例如 `lab1`）。你应该能够像下图一样打开实验。
 
-![](course-vm-lab1-folder.jpg)
+![](images/course-vm-lab1-folder.jpg)
 
 打开 VS Code 中的命令面板[^3]，搜索并选择 `Dev Containers:Rebuild and Reopen in Container` 来搭建实验环境（即构建并打开容器，并将你的本地机器连接到包含实验内容的容器）。这个过程可能需要几分钟，因为它需要下载我们的 Docker 镜像。
 
@@ -84,15 +84,15 @@ classoption: [oneside]
 
 :star: 如果你无法访问 Docker 页面，请参考 <a href="https://pan.baidu.com/s/1B7W2EeSUts_k2lzoTnJhDg?pwd=yebz">这个链接</a> 下载 Docker 镜像。解压后，在容器中构建之前，使用 `docker load -i <镜像 tar 文件路径>` 来加载镜像。
 
-![](course-vm-lab1-rebuild-and-reopen-container.jpg)
+![](images/course-vm-lab1-rebuild-and-reopen-container.jpg)
 
 这将重新加载 VS Code 并设置好开发环境。你现在可以在 VS Code 中编辑、运行和调试你的实验了。你可以打开 VS Code 中的终端：
 
-![](course-vm-lab1.jpg)
+![](images/course-vm-lab1.jpg)
 
 要检查你是否成功在容器中打开了实验，可以在终端中运行 `clang --version`，你应该能看到 clang 的版本信息：
 
-![](course-vm-lab1-clang.jpg)
+![](images/course-vm-lab1-clang.jpg)
 
 如果你关闭了这个新窗口中的实验（即你的本地机器与容器断开了连接），并希望继续实验。
 你可以再次在 VS Code 中打开实验文件夹，打开命令面板，搜索并选择 `Reopen in Container`。

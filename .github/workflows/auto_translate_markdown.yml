@@ -50,7 +50,12 @@ jobs:
 
       - name: Concat translated files
         run: |
-          mkdir output
+          if [ ! -d "output" ]; then
+            mkdir output
+            echo "output create success"
+          else
+            echo "output exists"
+          fi
           python .github/scripts/concat_translated_markdown.py
           echo "✅ Concatnation Done."
 

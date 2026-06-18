@@ -3,7 +3,7 @@ name: Generate PDF
 on:
   push:
     branches:
-      - 'main'
+      - 'master'
     paths:
       - 'output/output.md'
 

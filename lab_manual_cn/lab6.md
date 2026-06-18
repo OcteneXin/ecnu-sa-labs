@@ -8,27 +8,27 @@
 
 你将通过编写一个 LLVM pass 来实现这一目标。
 
-由于为像 C 这样的完整语言开发静态分析器并非易事，本实验将分为两部分进行。
+由于为像 C 这样的完整语言开发静态分析器是一项艰巨的任务，本实验将分为两部分进行。
 
 ### 第一部分
 
 1. 实现 `DivZeroAnalysis::check`，用于检查给定指令是否可能导致错误。
-2. 实现 `src/Transfer.cpp` 中的 `DivZeroAnalysis::transfer`。
-3. 通过补全提供的函数存根，实现 `src/Transfer.cpp` 中的 `eval` 函数。
+2. 实现位于 `src/Transfer.cpp` 中的 `DivZeroAnalysis::transfer`。
+3. 通过补全提供的函数框架，实现 `src/Transfer.cpp` 中的 `eval` 函数。
 
 ### 第二部分
 
-在本实验的第二部分，你将实现 `src/ChaoticIteration` 中的多个函数。
+在本实验的第二部分，你将实现 `src/ChaoticIteration` 中的各种函数。
 
-1. 实现 `doAnalysis` 函数，为你的分析执行混沌迭代算法。
-2. 实现 `flowIn` 函数，合并所有传入流的 out memory。
-3. 实现 `flowOut` 函数，更新 out memory 并根据需要将所有传出流加入 `WorkSet`。
-4. 实现 `join` 函数，合并两个 Memory 对象，考虑 Domain 值。
-5. 实现 `equal` 函数，检查两个 Memory 对象是否相等，考虑 Domain 值。
+1. 实现 `doAnalysis` 函数，该函数为你的分析执行混沌迭代算法。
+2. 实现 `flowIn` 函数，用于合并所有传入流的 out 内存。
+3. 实现 `flowOut` 函数，用于更新 out 内存，并在必要时将所有传出流加入 `WorkSet`。
+4. 实现 `join` 函数，用于合并两个 Memory 对象，并考虑 Domain 值。
+5. 实现 `equal` 函数，用于检查两个 Memory 对象是否相等，并考虑 Domain 值。
 
 ## 环境搭建
 
-实验6的骨架代码位于 `lab6/` 目录下。
+实验 6 的骨架代码位于 `lab6/` 目录下。
 
 ### 步骤 1
 
@@ -53,8 +53,8 @@
 
 `clang` 命令从输入 C 程序 `test04.c` 生成 LLVM IR 程序。
 
-`opt` 命令优化该 LLVM IR 程序，并生成一个等价的、更易于你将在本实验中构建的分析器处理的 LLVM IR 程序。
-特别地，`-mem2reg` 选项将每个 [AllocaInst][LLVM AllocaInst] 提升为寄存器，使你的分析器在本实验中无需处理指针。
+`opt` 命令优化该 LLVM IR 程序，并生成一个等价的 LLVM IR 程序，使其更易于你将在本实验中构建的分析器处理。
+特别是，`-mem2reg` 选项将每个 [AllocaInst][LLVM AllocaInst] 提升为寄存器，从而允许你的分析器在本实验中忽略对指针的处理。
 
 ```sh
 /lab6/test$ clang-19 -emit-llvm -S -fno-discard-value-names -Xclang -disable-O0-optnone -c -o test04.ll test04.c
@@ -65,7 +65,7 @@
 
 与之前的实验类似，你将把你的分析器实现为一个名为 `DivZeroPass` 的 LLVM pass。
 
-**如果你尚未完成代码，运行以下命令会导致段错误，这是正常的。完成代码后再重新运行测试。**
+**如果你尚未完成代码，运行以下命令将导致段错误，这是正常的。完成代码后再重新运行测试。**
 
 然后，你将使用 `opt` 命令在优化后的 LLVM IR 程序上运行此 pass，如下所示：
 
@@ -103,49 +103,50 @@ Potential Instructions by DivZero:
 2. 针对单个指令的转移函数，使用抽象域评估该指令。
 3. 合并单个指令的分析结果，以获得整个函数或程序的分析结果。
 
-在实验的第一部分，我们将只专注于实现第2项，
+在实验的第一部分，我们将只专注于实现第 2 项，
 并且仅针对上述描述的有限指令子集。
 
-更具体地说，你的任务是实现分析器如何评估不同的 LLVM IR 指令，
-这些指令作用于提供的抽象域（定义在 `Domain.h` 中）中的抽象值。
+更具体地说，你的任务是实现分析如何评估不同的 LLVM IR 指令，
+这些指令作用于来自提供的抽象域（定义在 `Domain.h` 中）的抽象值上。
 
-在实验的第二部分，我们将专注于实现第3项，即合并单个转移函数的结果，
-以获得一个过程内、流敏感、路径不敏感的除零分析。
+在实验的第二部分，我们将专注于实现第 3 项，即合并单个
+转移函数的结果，以获得一个过程内、流敏感、路径不敏感的除零分析。
 
 我们提供了一个框架来构建你的除零静态分析器。
 该框架由 `lab6/src/` 下的 `Domain.cpp`、`Transfer.cpp`、`ChaoticIteration.cpp` 和 `DivZeroAnalysis.cpp` 文件组成。
 
-此外，还提供了 `src/Utils.cpp`，其中定义了几个有用的函数：
+此外，我们还提供了 `src/Utils.cpp`，其中定义了一些有用的函数：
 
 + `variable` 接受一个 `Value` 并返回字符串。
     该字符串用作存储在 `InMap` 和 `OutMap` 中的 Memory 映射的键。
-+ `getOrExtract` 接受一个 `Memory` 和一个 `Value`，返回 `Memory` 中对应于 `Value` 的 `Domain`，如果未找到，则尝试从指令本身提取 `Domain`。
++ `getOrExtract` 接受一个 `Memory` 和一个 `Value`，并返回 `Memory` 中对应于 `Value` 的 `Domain`，如果未找到，则
+    尝试从指令本身提取 `Domain`。
 + `printMemory`、`printInstructionTransfer` 和 `printMap` 会将各种调试信息打印到 `stderr`。
 
 ### **第一部分：检查与转移函数**
 
 #### 步骤 1
 
-通过阅读 [A Menagerie of Program Abstractions][Menagerie Link] 文章，重新理解程序抽象的概念。
+通过阅读关于 [程序抽象动物园][Menagerie Link] 的文章，重新理解程序抽象的概念。
 
-一旦你对抽象域有了良好的理解，请研究 `Domain` 类，以理解我们为本实验定义供你使用的抽象域。
+一旦你对抽象域有了良好的理解，请研究 `Domain` 类，以了解我们为本实验定义供你使用的抽象域。
 文件 `include/Domain.h` 和 `src/Domain.cpp` 包含了抽象值及其操作。
 这些操作将执行抽象评估，**而无需运行程序**。
-正如文章所述，我们为加法、减法、乘法和除法定义了抽象运算符。
+正如文章中所述，我们为加法、减法、乘法和除法定义了抽象运算符。
 
 此分析的一个重要部分是认识到你实际上从未运行程序。
-这意味着当你去评估诸如以下指令时：
+这意味着当你去评估一条指令时，例如：
 
 ```llvm
 %cmp = icmp slt i32 %x, %y
 ```
 
-`%cmp` 的 Domain 不是由 `%x` 和 `%y` 的运行时值决定的，而是由它们各自的 Domain 相对于比较指令的评估结果决定的。
-所以，更具体地说，如果 `%x` 的 Domain 是 `Domain::Zero`，而 `%y` 的 Domain 也是 `Domain::Zero`，由于小于比较会被视为 **[False When Equal][LLVM CmpInst]**，结果 Domain 将是 `Domain::Zero`。
+`%cmp` 的域不是由 `%x` 和 `%y` 的运行时值决定的，而是由它们各自的域相对于比较指令的评估结果决定的。
+所以，更具体地说，如果 `%x` 的域是 `Domain::Zero`，而 `%y` 的域也是 `Domain::Zero`，由于小于比较会被认为是 **[相等时为假][LLVM CmpInst]**，那么结果域将是 `Domain::Zero`。
 
 #### 步骤 2
 
-检查 `DivZeroAnalysis::runOnFunction`，以理解编译器 pass 在高层面上是如何执行分析的：
+检查 `DivZeroAnalysis::runOnFunction` 以了解编译器 pass 在高层面上是如何执行分析的：
 ```cpp
 bool DivZeroAnalysis::runOnFunction(Function &F) {
   outs() << "Running " << getAnalysisName() << " on " << F.getName() << "\n";
@@ -164,14 +165,14 @@ bool DivZeroAnalysis::runOnFunction(Function &F) {
   ...
 }
 ```
-`runOnFunction` 过程在编译器执行 pass 期间，为输入 C 程序中的每个函数调用一次。
-每个指令 `I` 被用作键，在全局的 `InMap` 和 `OutMap` 哈希映射中初始化一个新的 `Memory` 对象。
-这些映射将在下一步中更详细地描述，但现在你可以将它们视为存储每条指令之前和之后每个变量的抽象值。
+`runOnFunction` 过程会在编译器执行 pass 期间，为输入 C 程序中的每个函数调用一次。
+每个指令 `I` 都被用作键，在全局的 `InMap` 和 `OutMap` 哈希映射中初始化一个新的 `Memory` 对象。
+这些映射将在下一步中更详细地描述，但现在你可以将它们理解为存储每条指令之前和之后每个变量的抽象值。
 例如，抽象状态可能存储诸如"**在指令 i 之前，变量 x 是正数**"这样的事实。
 由于 `InMap` 和 `OutMap` 是全局的，请随意在你的代码中直接使用它们。
 
-一旦 **In** 和 **Out** 映射初始化完成，`runOnFunction` 调用 `doAnalysis`：你将在第二部分中实现该函数以执行混沌迭代算法。
-对于第一部分，你可以假设它只是使用适当的 `InMap` 和 `OutMap` 映射调用 `transfer`。
+一旦 **In** 和 **Out** 映射初始化完毕，`runOnFunction` 就会调用 `doAnalysis`：这是一个你将在第二部分中实现的函数，用于执行混沌迭代算法。
+对于第一部分，你可以假设它只是使用适当的 `InMap` 和 `OutMap` 映射来调用 `transfer`。
 
 所以，在高层面上，`runOnFunction` 将：
 1. 初始化 **In** 和 **Out** 映射。
@@ -182,7 +183,7 @@ bool DivZeroAnalysis::runOnFunction(Function &F) {
 
 理解所提供框架中的内存抽象。
 
-对于每个 `Instruction`，`DivZeroAnalysis::InMap` 和 `DivZeroAnalysis::OutMap` 分别存储指令之前和之后的**抽象状态**。
+对于每个 `Instruction`，`DivZeroAnalysis::InMap` 和 `DivZeroAnalysis::OutMap` 分别存储指令**之前**和**之后**的**抽象状态**。
 
 抽象状态是从 LLVM 变量到抽象值的映射；具体来说，我们将 `Memory` 定义为 `std::map<std::string, Domain *>`。
 
@@ -192,16 +193,16 @@ bool DivZeroAnalysis::runOnFunction(Function &F) {
 
 例如，考虑以下 LLVM 程序。我们展示了每条指令之前和之后的抽象状态，记为 **M**：
 
-|  ID   | 指令                            | 指令前状态 | 指令后状态       |
-| :---: | :------------------------------ | :----------------- | :----------------- |
-| `I1`  | `%x = call i32 (...) @input()`  | `{  }`             | `{ %x: T }`        |
-| `I2`  | `%y = add i32 %x, 1`           | `{ %x: T }`        | `{ %x: T, %y: T }` |
+|  ID   | 指令                            | 指令之前 | 指令之后       |
+| :---: | :------------------------------ | :------- | :------------- |
+| `I1`  | `%x = call i32 (...) @input()`  | `{  }`   | `{ %x: T }`    |
+| `I2`  | `%y = add i32 %x, 1`            | `{ %x: T }` | `{ %x: T, %y: T }` |
 
-在第一条指令 `I1` 中，我们将一个输入整数赋给变量 `%x`。
+在第一条指令 `I1` 中，我们将一个输入整数赋值给变量 `%x`。
 
-在抽象状态中，我们使用抽象值 **T**（也称为"top"或 `MaybeZero`），因为该值在编译时未知。
+在抽象状态中，我们使用抽象值 **T**（也称为"顶"或 `MaybeZero`），因为该值在编译时是未知的。
 
-指令 `I2` 更新了 `%y` 的抽象值，该值是通过对 `%x` 的抽象值使用抽象加法运算（记为 `+`）计算得出的。
+指令 `I2` 更新了 `%y` 的抽象值，该值是通过对 `%x` 的抽象值应用抽象加法运算（记为 `+`）计算得出的。
 
 请注意，在 LLVM 框架中，赋值指令（例如，call、二元运算符、icmp 等）的对象也代表它定义的变量（即其左侧）。
 
@@ -211,39 +212,39 @@ bool DivZeroAnalysis::runOnFunction(Function &F) {
 
 #### 步骤 4
 
-现在我们理解了 pass 如何执行分析以及我们将如何存储每个抽象状态，我们可以开始实现了。
+既然我们理解了 pass 如何执行分析以及我们将如何存储每个抽象状态，我们就可以开始实现了。
 
-首先，你将实现 `src/Transfer.cpp` 中的 `DivZeroAnalysis::transfer` 函数，以填充每条指令的 `OutMap`。
-具体来说，给定一条指令及其传入的抽象状态（`const Memory *In`），`transfer` 应填充派生的传出抽象状态（`Memory *NOut`），该状态源自 `eval` 的适当实现。
+首先，你将实现位于 `src/Transfer.cpp` 中的函数 `DivZeroAnalysis::transfer`，以填充每条指令的 `OutMap`。
+具体来说，给定一条指令及其传入的抽象状态（`const Memory *In`），`transfer` 应该填充派生的传出抽象状态（`Memory *NOut`），该状态来自 `eval` 的适当实现。
 
 `Instruction` 类代表所有类型指令的父类。
 `Instruction` 有[许多子类][LLVM Instruction Class]。
-为了填充 `OutMap`，每种类型的指令应以不同方式处理。
+为了填充 `OutMap`，每种类型的指令都应该被区别处理。
 
 回想一下，在本实验中，你应该处理：
 1. [二元运算符][LLVM BinOps]（add、mul、sub 等）
 2. [CastInst][LLVM CastInst]
 3. [CmpInst][LLVM CmpInst]（icmp、eq、ne、slt、sgt、sge 等）
-4. 通过 `getchar()` 的用户输入——回想一下，这通过 `src/Transfer.cpp` 中的 `isInput()` 处理。
+4. 通过 `getchar()` 的用户输入 - 回想一下，这是使用 `src/Transfer.cpp` 中的 `isInput()` 来处理的。
 
 LLVM 提供了[几个模板函数][LLVM template functions]来检查指令的类型。
 我们现在将专注于 `dyn_cast<>`。
-在此示例中，我们检查 `Instruction` `I` 是否为 BinaryOperator。
+在这个例子中，我们检查 `Instruction` `I` 是否是一个 BinaryOperator。
 
 ```cpp
 if (BinaryOperator *BO = dyn_cast<BinaryOperator>(I)) {
-  // I 是一个 BinaryOperator，执行某些操作
+  // I 是一个 BinaryOperator，做点什么
 }
 ```
 在运行时，如果可能，`dyn_cast` 将返回 `I` *转换后*的 `BinaryOperator`，否则返回 null。
 
-此时，你的 `eval(...)` 实现将接受指令，并确定该指令的 Domain 如何受操作影响。
+此时，你的 `eval(...)` 实现将接受指令，并确定该指令的域如何受操作影响。
 例如，
 
 ```llvm
 %add = add nsw i32 %x, %y
 ```
-假设 `%x` 的域是 `Domain::Zero`，`%y` 的域是 `Domain::NonZero`。由于 `%y` 可以取任何非零值（正或负），`%add` 的结果域将由 `Zero` 与 `NonZero` 值的加法决定。
+假设 `%x` 的域是 `Domain::Zero`，而 `%y` 的域是 `Domain::NonZero`。由于 `%y` 可以取任何非零值（正数或负数），`%add` 的结果域将由 `Zero` 与 `NonZero` 值的加法决定。
 因此，`%add` 的域被确定为 `Domain::NonZero`。
 通过这种方式，`DivZeroAnalysis::transfer` 函数为给定 `Instruction` 的相关操作更新 `OutMap`。
 
@@ -251,8 +252,8 @@ if (BinaryOperator *BO = dyn_cast<BinaryOperator>(I)) {
 
 **处理 LLVM PHI 节点。**
 出于优化目的，编译器通常以**静态单赋值**（SSA）形式实现其中间表示，LLVM IR 也不例外。
-在 SSA 形式中，变量恰好在一个代码点被赋值和更新。
-如果源代码中的变量有多个赋值，这些赋值在 LLVM IR 中被拆分为不同的变量，然后**合并**回来。
+在 SSA 形式中，一个变量恰好在一个代码点被赋值和更新。
+如果源代码中的一个变量有多个赋值，这些赋值会在 LLVM IR 中被拆分为不同的变量，然后再**合并**回来。
 我们称这个合并点为 **phi 节点**。
 
 为了说明 phi 节点，请考虑以下代码：
@@ -301,10 +302,10 @@ end:                       ; preds = %else, %then
 </table>
 
 根据 `y` 的值，我们要么走左分支执行 `x++`，要么走右分支执行 `x--`。
-在相应的 LLVM IR 中，对 `x` 的更新被拆分为两个变量 `%inc` 和 `%dec`。
+在相应的 LLVM IR 中，对 `x` 的这次更新被拆分为两个变量 `%inc` 和 `%dec`。
 `%x` 在分支执行后通过 `phi` 指令赋值；抽象地说，`phi i32 [ %inc, %then ], [ %dec, %else ]` 表示如果 then 分支被执行，则将 `%inc` 赋给 `%x`，或者如果 else 分支被执行，则将 `%dec` 赋给 `%x`。
 
-这里有一段示例代码，可以帮助你处理 phi 节点，因为具体细节超出了本课程的范围；不过，如果你对这些编译器细节感兴趣，可以自由阅读更多关于 SSA 的内容。
+这里有一段示例代码可以帮助你处理 phi 节点，因为具体细节超出了本课程的范围；不过，如果你对这些编译器细节感兴趣，欢迎进一步阅读关于 SSA 的内容。
 
 ```cpp
 Domain *eval(PHINode *Phi, const Memory *InMem) {
@@ -324,7 +325,7 @@ Domain *eval(PHINode *Phi, const Memory *InMem) {
 
 #### 步骤 5
 
-实现 `src/DivZeroAnalysis.cpp` 中的 `DivZeroAnalysis::check` 函数。
+实现位于 `src/DivZeroAnalysis.cpp` 中的 `DivZeroAnalysis::check` 函数。
 此函数检查一条 `Instruction`，以确定是否**可能**发生除零错误。
 任何**有符号**或**无符号**除法指令，如果其除数的 `Domain` 是 `Domain::Zero` 或 `Domain::MaybeZero`，都将被视为潜在的除零错误。
 你应该使用 `DivZeroAnalysis::InMap` 来判断是否存在错误。
@@ -339,7 +340,7 @@ Domain *eval(PHINode *Phi, const Memory *InMem) {
 /lab6/build$ make
 ```
 
-正如我们在环境搭建部分演示的那样，使用 `opt` 在测试文件上运行你的分析器：
+正如我们在环境搭建部分演示的那样，使用 `opt` 在你的测试文件上运行分析器：
 
 ```sh
 /lab6/test$ opt-19 -load-pass-plugin ../build/DivZeroPass.so -passes="DivZero" -disable-output test04.opt.ll > test04.out 2> test04.err
@@ -353,26 +354,26 @@ Instructions that potentially divide by zero:
   %div = sdiv i32 1, 0
 ```
 
-### 第二部分：整合所有内容——数据流分析
+### 第二部分：整合所有内容 - 数据流分析
 
-现在你已经有了填充 in 和 out 映射的代码，并使用它们来检查除零错误，下一步是实现 `src/ChaoticIteration.cpp` 中 `doAnalysis` 函数的混沌迭代算法。
+现在你已经有了填充 in 和 out 映射并使用它们检查除零错误的代码，下一步是实现位于 `src/ChaoticIteration.cpp` 中的函数 `doAnalysis` 中的混沌迭代算法。
 
-首先，复习数据流分析讲座的内容。
-特别地，研究到达定义分析和混沌迭代算法。
-非正式地说，数据流分析为程序控制流图中的每个节点创建并填充一个 **IN** 集合和一个 **OUT** 集合。
-**flowIn** 和 **flowOut** 操作重复执行，直到算法达到一个不动点。
+首先，回顾数据流分析的讲座内容。
+特别是，研究到达定值分析和混沌迭代算法。
+非正式地说，数据流分析为程序控制流图中的每个节点创建并填充一个 **IN** 集和一个 **OUT** 集。
+**flowIn** 和 **flowOut** 操作会重复执行，直到算法达到一个不动点。
 
-更正式地说，`doAnalysis` 函数应维护一个 `WorkSet`，其中包含"需要更多工作"的节点。
+更正式地说，`doAnalysis` 函数应该维护一个 `WorkSet`，其中包含"需要更多工作"的节点。
 当 `WorkSet` 为空时，算法已达到不动点。
 对于 `WorkSet` 中的每条指令，你的函数应执行以下操作：
 
-1. 执行 **flowIn** 操作，合并所有传入流的 **OUT** 集合，并将结果保存到当前指令的 **IN** 集合中。
-在这里，你将使用你在第一部分中填充的 `InMap` 和 `OutMap` 中的条目作为 **IN** 和 **OUT** 集合。
-2. 应用你在第一部分中实现的 `transfer` 函数来填充当前指令的 **OUT** 集合。
+1. 执行 **flowIn** 操作，合并所有传入流的 **OUT** 集，并将结果保存到当前指令的 **IN** 集中。
+在这里，你将使用你在第一部分中填充的 `InMap` 和 `OutMap` 中的条目作为 **IN** 和 **OUT** 集。
+2. 应用你在第一部分中实现的 `transfer` 函数来填充当前指令的 **OUT** 集。
 3. 执行 **flowOut** 操作，相应地更新 `WorkSet`。
-仅当 `transfer` 函数更改了 **OUT** 集合时，才应添加当前指令的后继指令。
+仅当 `transfer` 函数更改了 **OUT** 集时，才应添加当前指令的后继指令。
 
-以下是一个示例，说明如何将指令加载到 `WorkSet` 中，以及如何引入 [llvm::SetVector][LLVM SetVector] 容器，请随意在你的实现中使用此代码：
+以下是一个示例，说明如何将指令加载到 `WorkSet` 中，并介绍 [llvm::SetVector][LLVM SetVector] 容器，请随意在你的实现中使用此代码：
 
 ```cpp
 void DivZeroAnalysis::doAnalysis(Function &F) {
@@ -385,46 +386,46 @@ void DivZeroAnalysis::doAnalysis(Function &F) {
 ```
 
 对于本实验，我们不需要维护显式的控制流图；LLVM 已经在内部维护了一个。
-为了让你专注于本作业的数据流部分，我们提供了两个辅助函数 `getSuccessors` 和 `getPredecessors`（定义在 `include/DivZeroAnalysis.h` 中），它们查找并返回给定 LLVM `Instruction` 的后继和前驱。
+为了让你专注于本任务的数据流部分，我们提供了两个辅助函数 `getSuccessors` 和 `getPredecessors`（定义在 `include/DivZeroAnalysis.h` 中），用于查找并返回给定 LLVM `Instruction` 的后继和前驱。
 
 接下来，你将实现混沌迭代算法的各个部分。
 
 #### 步骤 1
 
-在 `flowIn` 中，你将执行到达定义分析的第一步，即取 `I` 所有前驱的 **OUT** 变量的并集。
+在 `flowIn` 中，你将执行到达定值分析的第一步，即取 `I` 的所有前驱的 **OUT** 变量的并集。
 你可能会发现 `src/ChaoticIteration.cpp` 中的 `getPredecessors` 方法在这里很有帮助。
-这应在以下为你模板化的函数中完成：
+这应该在以下为你模板化的函数中完成：
 
 * `void DivZeroAnalysis:flowIn(Instruction *I, Memory *In)`
 
-给定一个 `Instruction` `I` 及其 **IN** 变量集合 Memory `In`，你需要将 **IN** 与 `I` 的每个前驱的 **OUT** 进行合并。
+给定一个 `Instruction` `I` 及其 **IN** 变量集 Memory `In`，你需要将 **IN** 与 `I` 的每个前驱的 **OUT** 进行合并。
 为了合并两个内存状态，你需要实现以下模板化的 join 函数：
 
 * `Memory* join (Memory *M1, Memory *M2)`
 
 在此函数中，合并这些 `Memory` 对象时，你还需要考虑 `Domain` 值。
 请参考抽象域，了解为什么这是必要的。
-回想一下，`Domain` 类中定义了用于合并两个抽象值的 `join` 操作。
+回想一下，用于合并两个抽象值的 `join` 操作是在 `Domain` 类中定义的。
 
 #### 步骤 2
 
-调用你在第一部分中实现的 `transfer` 函数来填充当前指令的 **OUT** 集合。
+调用你在第一部分中实现的 `transfer` 函数来填充当前指令的 **OUT** 集。
 
 #### 步骤 3
 
 在 `flowOut` 中，你将确定给定指令是否需要再次分析。
-这应在以下为你模板化的函数中完成：
+这应该在以下为你模板化的函数中完成：
 
 * `void DivZeroAnalysis::flowOut(Instruction *I, Memory *Pre, Memory *Post, SetVector<Instruction *> &WorkSet)`
 
 给定一个 `Instruction` `I`，你将分析**转移前**的 Memory `Pre` 和**转移后**的 Memory `Post`。
-如果在应用 `transfer` 后内存值存在变化，你将需要将指令 `I` 提交进行额外分析。
-为了确定在 `transfer` 函数执行期间内存是否发生了变化，你将实现 `equal` 函数：
+如果在应用 `transfer` 后内存值存在变化，你将需要将指令 `I` 提交以进行额外分析。
+为了确定在 `transfer` 函数执行期间内存是否发生了变化，你将实现函数 `equal`：
 
 * `bool equal(Memory *M1, Memory * M2)`
 
-在此函数中，确定两个 `Memory` 对象是否相等时，你同样需要考虑 `Domain` 值。
-回想一下，`Domain` 类中定义了用于评估两个抽象值是否相等的 `equal` 操作。
+在此函数中，确定两个 `Memory` 对象是否相等时，你将再次考虑 `Domain` 值。
+回想一下，用于评估两个抽象值是否相等的 `equal` 操作是在 `Domain` 类中定义的。
 
 最后，在 `flowOut` 中，确保更新指令 `I` 的 `OutMap`，使其包含 `Post` 中的值。
 
@@ -440,9 +441,9 @@ void DivZeroAnalysis::doAnalysis(Function &F) {
 /lab6/build$ make
 ```
 
-完成上述步骤后，你的分析器应生成两个输出文件。
+完成上述步骤后，你的分析器应生成 2 个输出文件。
 1. `test.out`，其中 test 是你正在测试的程序，是结果的精简版本，仅包含具有潜在除零操作的指令。
-2. `test.err` 是一个完整报告，包括任何具有潜在除零操作的指令，以及每个被审查指令的 `InMap` 和 `OutMap` 的最终状态。
+2. `test.err` 是一个完整报告，包括任何具有潜在除零操作的指令，以及正在审查的每条指令的 `InMap` 和 `OutMap` 的最终状态。
 
 你的输出格式如下：
 

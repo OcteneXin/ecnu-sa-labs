@@ -59,7 +59,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           branch: ci/docs-auto-translate
-          base: main
+          base: master
           title: "chore(docs): auto-translate"
           commit-message: "Auto-translate updated documentation"
           author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>

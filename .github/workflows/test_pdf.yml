@@ -17,7 +17,7 @@ jobs:
           args: >-  # break string of arguments into multiple lines
             lab_manual_cn/output.md --output=output/result.pdf --pdf-engine=xelatex
             --template .github/template/eisvogel.latex
-            --from markdown
+            --from markdown+emoji
             --toc-depth=2
             --number-sections
             --syntax-highlighting idiomatic

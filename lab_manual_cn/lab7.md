@@ -1,16 +1,16 @@
 # 指针分析
 
-编写一个作为 LLVM pass 的 C 语言“除零”静态分析工具，用于处理指针别名和动态分配的内存。
+编写一个作为 LLVM pass 的 C 程序“除零”静态分析，该分析能够处理指针别名和动态分配的内存。
 
 ## 目标
 
 本实验的目标是扩展实验 6 中的静态**除零**检查器，使其能够在存在指针的情况下进行分析。
-你将把上一个实验中的数据流分析与一个流不敏感的指针分析相结合，从而得到一个更全面的整体静态分析。
+你将把上一个实验中的数据流分析与一个流不敏感的指针分析结合起来，从而得到一个更全面的整体静态分析。
 
 ## 环境搭建
 
 实验 6 的骨架代码位于 `/lab6` 目录下。
-在描述文件位置时，我们会经常将实验 6 的顶层目录称为 `lab6`。
+在描述文件位置时，我们会经常将实验 6 的顶级目录称为 `lab6`。
 本实验基于你在实验 5 中的工作，因此你可以重用 `/lab5/src` 目录中的大部分内容。
 
 ### 步骤 1
@@ -23,9 +23,9 @@
 /lab6$ make
 ```
 
-在生成的文件中，你应该会在 `build` 目录下看到 `DivZeroPass.so`，这与上一个实验类似。
+在生成的文件中，你应该会在 `build` 目录下看到 `DivZeroPass.so`，与上一个实验类似。
 在本实验中，你将修改 `src/ChaoticIteration.cpp`、`DivZeroAnalysis.cpp` 和 `Transfer.cpp`。
-这些更改大部分可以从上一个实验复制过来，然后进行修改以适应新的要求。
+这些更改大部分可以从上一个实验复制过来，然后进行修改以适应新的需求。
 
 现在，我们准备在一个示例输入 C 程序上运行我们的基础实验。
 
@@ -42,8 +42,8 @@
 下一行 (`opt`) 在编译后的 LLVM IR 代码上运行你的 pass。
 
 在之前的实验中，我们使用了一个带有参数 `-mem2reg` 的中间步骤，该参数将每个
-[AllocaInst][LLVM AllocaInst] 提升为寄存器，从而让你的分析器在本实验中可以忽略对指针的处理。
-然而，在本实验中，我们不再这样做，因此你将扩展之前的代码来处理指针。
+[AllocaInst][LLVM AllocaInst] 提升为寄存器，从而允许你的分析器在本实验中忽略对指针的处理。
+然而，在本实验中我们不再这样做，因此你将扩展之前的代码来处理指针。
 
 成功完成本实验后，输出应如下所示：
 
@@ -54,13 +54,13 @@ Potential Instructions by DivZero:
     %div = sdiv i32 1, %2
 ```
 
-## 输入程序的格式
+## 输入程序格式
 
-本实验的输入格式与实验 6 相同，只是现在你需要处理指针：
+本实验的输入格式与实验 6 相同，不同之处在于现在你需要处理指针：
 
 * 你*可以*忽略对整数以外值的精确处理，但你的 LLVM pass 在遇到其他类型的值时不能引发段错误。
-* 你*必须*处理赋值、算术运算 (+, -, *, /)、比较运算 (<, <=, >, >=, ==, !=) 和分支。
-* 你*不必*精确处理 XOR、OR、AND 和移位运算，但你的程序在这些情况下不能引发段错误。
+* 你*必须*处理赋值、算术运算（+、-、*、/）、比较运算（<、<=、>、>=、==、!=）和分支。
+* 你*不需要*精确处理 XOR、OR、AND 和 Shift 运算，但你的程序在这些情况下不能引发段错误。
 * 输入程序*可以*包含 if 语句和循环。
 * 用户输入*仅*通过提供的 `isInput` 函数返回 `True` 的那组函数引入。
 * 你*可以忽略*对其他函数的其他调用指令。
@@ -94,15 +94,15 @@ void f() {
 }
 ```
 
-函数 `f()` 的签名中没有参数。
+函数 `f()` 在其签名中没有参数。
 实际上，函数可以接受任意数量的变量，
 甚至可以是不同类型的（但本实验将所有参数视为 `int`）。
 
-因此，在 `doAnalysis` 中，你需要处理带有参数的函数，并相应地设置它们的域。
+因此，在 `doAnalysis` 中，你需要处理带有参数的函数并相应地设置它们的域。
 
 #### 步骤 2
 
-熟悉作为**除零** LLVM pass 入口点的 `doAnalysis()` 例程。
+熟悉作为你的**除零** LLVM pass 入口点的 `doAnalysis()` 例程。
 在上一个实验中，你在这里实现了混沌迭代算法。
 对于实验 6，`doAnalysis()` 的函数签名现在略有变化，包含了一个 **PointerAnalysis** 对象。
 我们将在第二部分中详细介绍。
@@ -128,7 +128,7 @@ void DivZeroAnalysis::doAnalysis(Function &F, PointerAnalysis *PA)
 #### 步骤 4
 
 除了处理正在分析的函数 `F` 的参数外，
-我们还希望覆盖程序中进行的其他函数调用。
+我们还希望涵盖程序内部进行的其他函数调用。
 
 我们之前见过这个函数：
 
@@ -141,9 +141,9 @@ void main() {
 ```
 
 在上面的例子中，`getchar()` 是一个没有参数的外部函数调用，返回一个 `int`。
-更新你的分析以处理任意的 `CallInst` 指令，但仅限于返回类型为 `int` 的情况。
+更新你的分析以处理任意的 `CallInst` 指令，但仅限于返回类型是 `int` 的情况。
 
-### 第二部分：Store/Load 指令
+### 第二部分：存储/加载指令
 
 #### 步骤 1
 
@@ -160,12 +160,12 @@ void DivZeroAnalysis::transfer(Instruction *I, const Memory *In, Memory *NOut,
                                PointerAnalysis *PA, SetVector<Value *> PointerSet)
 ```
 
-在重用上一个作业的代码时，请确保复制你的实现细节和函数内容，但**保持函数签名不变！**。
+请确保在重用上一个作业的代码时，复制你的实现细节和函数内容，但**保持函数签名不变！**。
 
-这些参数在我们探索指针别名时是必需的。
+当我们探索指针别名时，这些参数是必要的。
 
 为了帮助理解代码与实验 6 有何不同以及它们是如何联系在一起的，
-请考虑 `DivZeroAnalysis::runOnFunction()` 中的以下片段：
+请考虑来自 `DivZeroAnalysis::runOnFunction()` 的以下片段：
 
 ```cpp
 bool DivZeroAnalysis::runOnFunction(Function &F) {
@@ -178,7 +178,7 @@ bool DivZeroAnalysis::runOnFunction(Function &F) {
 }
 ```
 
-以及 `DivZeroAnalysis::doAnalysis()` 中的以下片段：
+以及来自 `DivZeroAnalysis::doAnalysis()` 的以下片段：
 
 ```cpp
 void DivZeroAnalysis::doAnalysis(Function &F, PointerAnalysis *PA) {
@@ -200,22 +200,22 @@ void DivZeroAnalysis::doAnalysis(Function &F, PointerAnalysis *PA) {
 从高层次来看，你将修改 `Transfer.cpp` 中的 `transfer()` 函数，通过跟踪指针来执行更复杂的**除零**分析。
 
 `PointerAnalysis` 的代码位于 `src/PointerAnalysis.cpp` 中，它包含了使用指针别名所需的各种方法的实现。
-在对 `F` 运行指针分析后，`PointerAnalysis *PA` 对象将包含
+在对 `F` 运行指针分析之后，`PointerAnalysis *PA` 对象将包含
 对该函数运行的指针分析的结果，
 而 `PointerSet` 将包含该函数中的所有指针。
 
 我们将在以下部分更详细地讨论这个 `PointerAnalysis` 类的作用，
 但请通读文档字符串和代码，并理解所提供的每个方法中正在做什么。
 
-##### 建模 LLVM alloca、store 和 load
+##### 对 LLVM alloca、store 和 load 进行建模。
 
 这里我们提供了一个在 LLVM 中处理指针的接口。
 
-你可以直接使用它作为后备方案，但也可以自由地按照自己的方式对 LLVM 中的引用进行建模。
+你可以按原样使用它作为后备方案，但也可以自由地按照自己的方式对 LLVM 中的引用进行建模。
 
 对于本实验，我们禁用了实验 6 中使用的 `mem2reg` pass。
 因此，LLVM 将为每个 C 变量创建一个内存单元。
-结果，你将看不到任何 **phi 节点**，并且不一定需要
+因此你不会看到任何 **phi 节点**，并且不一定需要
 你在实验 6 中为实现处理它们而编写的代码段。
 
 考虑以下代码：
@@ -267,13 +267,13 @@ M[variable(I6)] = M[variable(I2)]
 
 与实验 6 一样，`variable()` 方法仍然用于编码指令的变量。
 
-##### 构建指向图
+##### 构建指向图。
 
 `PointerAnalysis` 类构建了一个指向图，你将在 `transfer` 函数中使用它。
 `PointsToInfo` 表示从变量到 `PointsToSet` 的映射，
 `PointsToSet` 表示一个变量可能指向的分配站点集合。
 
-为了帮助建模与变量 `%a`（即 `variable(I1)`）对应的内存位置，
+为了帮助对与变量 `%a`（即 `variable(I1)`）对应的内存位置进行建模，
 我们提供了一个函数 `address`，
 你可以在构建 `PointsToSet` 时使用它来编码变量的内存地址（`address(I1)`）。
 
@@ -297,34 +297,34 @@ M[variable(I6)] = M[variable(I2)]
 ##### LoadInst
 
 我们可以依赖 `In` 内存中定义的现有变量来知道
-应该为 load 指令引入的新变量分配哪个抽象域。
+应该为加载指令引入的新变量分配哪个抽象域。
 
-例如，给定如下 load 指令：
+例如，给定如下加载指令：
 
 ```llvm
 %2 = load i32, i32* %1, align 4
 ```
 
-这是将 `%1` 处的指针的值加载到类型为 `i32` 的新变量 `%2` 中。
-因此，`%2` 的抽象域应该与 `%1` 的抽象域相同。
+这是将 `%1` 处指针的值加载到类型为 `i32` 的新变量 `%2` 中。
+因此 `%2` 的抽象域应该与 `%1` 的抽象域相同。
 
-随着指针的加入，我们也可以有：
+随着指针的加入，我们还可以有：
 
 ```llvm
 %1 = load i32*, i32** %d, align 8
 ```
 
-这是将 `%d` 处的指针的值（它本身是一个指针）加载到类型为 `i32*` 的新变量 `%1` 中。
+这是将 `%d` 处指针的值（它本身是一个指针）加载到类型为 `i32*` 的新变量 `%1` 中。
 
-**注意** load 指令类型中额外的 `*` 字符（`load i32*`），与前面的例子相比。
-你可以使用 `getType()` 检索此 load 指令的类型，
+**注意** 与前面的示例相比，加载指令的类型（`load i32*`）中多了一个 `*` 字符。
+你可以使用 `getType()` 检索此加载指令的类型，
 并进一步使用 `isIntegerTy()` 或 `isPointerTy()` 等方法检查类型。
 
 ##### StoreInst
 
-Store 指令可以将新变量添加到我们的内存映射中，也可以覆盖现有变量。
+存储指令可以将新变量添加到我们的内存映射中，也可以覆盖现有变量。
 
-例如，给定如下 store 指令：
+例如，给定如下存储指令：
 
 ```llvm
 store i32, 0, i32* %a, align 4
@@ -333,7 +333,7 @@ store i32, 0, i32* %a, align 4
 这是将值 `0` 存储到变量 `%a` 中。
 
 你应该熟悉使用 `getOperand()` 检索这些操作数，但你也可以分别使用 `getValueOperand()` 和 `getPointerOperand()` 方法。
-随着指针的加入，我们也可以有：
+随着指针的加入，我们还可以有：
 
 ```llvm
 store i32* %a, i32** %c, align 4
@@ -358,7 +358,7 @@ int f() {
 
 我们需要遍历提供的 `PointerSet`：
 如果我们遇到某个实例，其中存在可能别名（`PA->isAlias()` 返回 `true`），
-这本质上意味着存在一条连接两个变量指针值的边。
+这本质上意味着存在一条连接两个变量之间指针值的边。
 一旦我们知道存在哪些连接，
 我们需要获取每个抽象值，
 通过 `Domain::join()` 将它们全部合并，
@@ -367,7 +367,7 @@ int f() {
 
 ## 提交
 
-完成实验后，通过提交并推送 `lab6/` 下的更改来提交你的代码。具体来说，你需要提交对 `src/ChaoticIteration.cpp`、`src/DivZeroAnalysis.cpp` 和 `src/Transfer.cpp` 的更改。
+完成实验后，通过提交并将更改推送到 `lab6/` 下来提交你的代码。具体来说，你需要提交对 `src/ChaoticIteration.cpp`、`src/DivZeroAnalysis.cpp` 和 `src/Transfer.cpp` 的更改。
 
 ```sh
 lab6$ git add src/ChaoticIteration.cpp src/DivZeroAnalysis.cpp src/Transfer.cpp

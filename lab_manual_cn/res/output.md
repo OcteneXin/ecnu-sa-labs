@@ -1,4 +1,4 @@
-<!-- ---
+---
 title: "软件分析与测试实验手册"
 author: [ecnu-sa-labs]
 date: "2026-06-01"
@@ -8,7 +8,7 @@ toc-own-page: true
 titlepage: true
 book: true
 classoption: [oneside] 
-... -->
+...
 
 # 搭建课程实验环境
 

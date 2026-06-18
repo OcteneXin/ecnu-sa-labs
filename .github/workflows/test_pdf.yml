@@ -22,7 +22,6 @@ jobs:
             --number-sections
             --syntax-highlighting idiomatic
             --top-level-division="chapter"
-            --print-highlight-style
       - uses: actions/upload-artifact@v4
         with:
           name: output

@@ -1,1 +1,1 @@
-TRANSLATE ALL
+lab_manual/lab4.md

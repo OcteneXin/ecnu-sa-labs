@@ -7,7 +7,7 @@ on:
     paths:
       - '**.md'
       - '.github/scripts/**'
-      - '.github/workflows/markdown-translation-update.yml'
+      - '.github/workflows/auto_translate_markdown.yml'
 
 permissions:
   contents: write

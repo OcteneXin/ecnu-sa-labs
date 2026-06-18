@@ -1,14 +1,18 @@
 name: Generate PDF
 
 on:
-  push:
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    types:
+      - closed
     branches:
-      - 'master'
+      - 'ci/**'
     paths:
-      - 'output/output.md'
+      - '**.md'
 
 jobs:
-  convert_via_pandoc:
+  if_merged:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4

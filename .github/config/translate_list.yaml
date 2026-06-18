@@ -31,6 +31,3 @@
 - path: lab_manual/lab9.md
   path_cn: lab_manual_cn/lab9.md
   reviewed_cn: .github/reviewed/lab9.md
-- path: README.md
-  path_cn: README_cn.md
-  reviewed_cn: .github/reviewed/readme_reviewed.md

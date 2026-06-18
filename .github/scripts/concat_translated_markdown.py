@@ -40,7 +40,15 @@ MARKDOWN_FILE_ARRAY = [
     # 'lab9.md' # 格式有问题，暂时先不用来生成
 ]
 
-OUTPUT_FILE = 'output.md'
+OUTPUT_FILE = 'output/output.md'
+
+
+def sanitize(text):
+    """
+    相对路径转绝对路径；去除emoji
+    """
+    final_text = text.replace("../image", "").replace(":star:","")
+    return final_text
 
 if __name__ == "__main__":
     final_markdown = YAML_HEADER
@@ -56,7 +64,8 @@ if __name__ == "__main__":
 
         final_markdown += '\n'
 
+    final_markdown = sanitize(final_markdown)
 
-    output_path = Path(f"{BASE_FOLDER}/{OUTPUT_FILE}")
+    output_path = Path(f"{OUTPUT_FILE}")
     with output_path.open("w", encoding="utf-8") as f:
         f.write(final_markdown)    

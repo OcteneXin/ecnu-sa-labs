@@ -6,7 +6,7 @@ from gpt_translator import OpenaiTranslator
 
 
 CONFIG_PATH = Path(".github/config/translate-list.yml")
-OPENAI_API_KEY = os.getenv("API_KEY")
+API_KEY = os.getenv("DEEKSEEK_API_KEY")
 
 def translate_file(translator:OpenaiTranslator, reviewed_path: Path, input_path: Path, output_path: Path) -> None:
     """
@@ -48,65 +48,33 @@ def find_translation_entry(file_config_list, fname):
         if item.get("path") == fname:
             return item["path_cn"], item["reviewed_cn"]
 
-def test_local_translate(file_name):
-
-    input_path = Path(f"/Users/octene/Desktop/ecnu-sa-labs/ecnu-sa-labs/lab_manual/{file_name}.md")
-    output_path = Path(f"/Users/octene/Desktop/ecnu-sa-labs/ecnu-sa-labs/lab_manual_cn/{file_name}.md")
-    openai_translator = OpenaiTranslator(api_key=OPENAI_API_KEY)
-
-    with open(input_path, "r", encoding="utf-8") as f:
-        original_content = f.read()
-
-    print(original_content)
-    
-    # Translate content using OpenAI translator
-    translated_content = openai_translator.translate_text_without_review(original_content)
-
-    # Write translated content to output file
-    with output_path.open("w", encoding="utf-8") as f:
-        f.write(translated_content)
-
 if __name__ == "__main__":
-    # files = []
-    # # argv[1] is the file list needed translation
-    # with open(sys.argv[1], "r", encoding="utf-8") as f:
-    #     files.extend(line.strip() for line in f.readlines() if line.strip())
+    # ===parse files changed===
+    files = []
+    # argv[1] is the file list needed translation
+    with open(sys.argv[1], "r", encoding="utf-8") as f:
+        files.extend(line.strip() for line in f.readlines() if line.strip())
 
-    # if len(files) == 0:
-    #     exit(0)
+    if len(files) == 0:
+        exit(0)
 
-    # openai_translator = OpenaiTranslator(api_key=OPENAI_API_KEY)
-
-    # with open(CONFIG_PATH, "r") as f:
-    #     file_config_list = list(yaml.safe_load(f))
+    with open(CONFIG_PATH, "r") as f:
+        file_config_list = list(yaml.safe_load(f))
     
-    # if "TRANSLATE ALL" in files:
-    #     files = [item["path"] for item in file_config_list]
+    if "TRANSLATE ALL" in files:
+        files = [item["path"] for item in file_config_list]
     
-    # translated = [] # output file list
-    # for fname in files:
-    #     output, reviewed = find_translation_entry(file_config_list, fname)
-        
-    #     if output is None or reviewed is None:
-    #         print(f"Cannot find translation entry for {fname}, skipped.")
-    #         continue
-        
-    #     translate_file(
-    #         translator=openai_translator,
-    #         reviewed_path=Path(reviewed),
-    #         input_path=Path(fname),
-    #         output_path=Path(output)
-    #     )
-    #     translated.append(output)
+    # ===translate begin===
+    openai_translator = OpenaiTranslator(api_key=API_KEY)
 
-    # if translated:
-    #     print("Translated files:")
-    #     print("\n".join(translated))
-    # for i in range(1,10):
-    #     test_local_translate(i)
-    # test_local_translate('9-MiniCREST')
-    test_local_translate('course-vm')
-    for i in range(1,9):
-        test_local_translate(f"lab{i}")
-    test_local_translate('9-MiniCREST')
-    # pass
+    translated = [] # output file list
+    for fname in files:
+        output, reviewed = find_translation_entry(file_config_list, fname)
+        
+        if output is None:
+            print(f"Cannot find translation entry for {fname}, skipped.")
+            continue
+        
+        # 暂时先不用review的版本
+        simple_translate_file(translator=openai_translator,input_path=Path(fname),output_path=Path(output))
+        translated.append(output)

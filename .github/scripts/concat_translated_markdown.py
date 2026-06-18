@@ -47,7 +47,7 @@ def sanitize(text):
     """
     相对路径转绝对路径；去除emoji
     """
-    final_text = text.replace("../image", "").replace(":star:","")
+    final_text = text.replace("../images", "images").replace(":star:","")
     return final_text
 
 if __name__ == "__main__":

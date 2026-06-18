@@ -1,14 +1,11 @@
 name: Generate PDF
 
-on:
-  pull_request:
-    # Sequence of patterns matched against refs/heads
-    types:
-      - closed
+# triggered manually
+on: 
+  workflow_dispatch
 
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true
+  convert_via_pandoc:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
